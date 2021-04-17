@@ -25,6 +25,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
 import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
+import Link from '@material-ui/core/Link'
 
 
 const drawerWidth = 240;
@@ -100,6 +101,13 @@ const useStyles = makeStyles((theme) => ({
   toolbarButtons: {
     marginLeft: 'auto',
   },
+  homeLink: {
+    color: "inherit",
+    "&:hover": {
+        color: "inherit",
+        textDecoration: "none"
+    }
+  },
 }));
 
 
@@ -162,7 +170,9 @@ export default function MenuAppBar() {
         />
         
         <Typography variant="h5" noWrap>
+          <Link className={classes.homeLink} href="/">
             AskMeAnything!
+          </Link>
         </Typography>
 
         {/*If user is not signed in */}

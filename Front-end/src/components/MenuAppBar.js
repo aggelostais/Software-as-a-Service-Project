@@ -25,6 +25,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
 import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
+import Link from '@material-ui/core/Link'
 
 
 const drawerWidth = 240;
@@ -96,6 +97,24 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  // this group of buttons will be aligned to the right side
+  toolbarButtons: {
+    marginLeft: 'auto',
+  },
+  signButton: {
+    margin: 3,
+    "&:hover": {
+      background: "#fff",
+      color: "#000000",
+  }
+  },
+  homeLink: {
+    color: "inherit",
+    "&:hover": {
+        color: "inherit",
+        textDecoration: "none"
+    }
+  },
 }));
 
 
@@ -158,28 +177,31 @@ export default function MenuAppBar() {
         />
         
         <Typography variant="h5" noWrap>
+          <Link className={classes.homeLink} href="/">
             AskMeAnything!
+          </Link>
         </Typography>
 
         {/*If user is not signed in */}
         {!auth && (
-          <>
+          <div className={classes.toolbarButtons}>
           <Button 
+            className={classes.signButton}
             color="inherit"
             fontweight="bold"
             href="/SignIn"
-            
             >
-               
-          Sign In
+            Sign In
           </Button>
           <Button 
-          color="inherit"
-          fontweight="bold"
-          href="/SignUp">
-          Sign Up
-        </Button>
-        </>)}
+            className={classes.signButton}
+            color="inherit"
+            fontweight="bold"
+            href="/SignUp"
+            >
+            Sign Up
+          </Button>
+        </div>)}
 
         {/*If user is signed in */}
         {auth && (

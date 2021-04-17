@@ -4,12 +4,19 @@
     display: flex;
     justify-content: center;
     align-self: center;
+    padding-top: 10px;
+    margin-top: 10px;
+    position:absolute;
+    left:0;
+    bottom:0;
+    right:0;
 }
 
 .footer-link-wrapper {
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-bottom: 0;
 }
 
 .footer-link-item {

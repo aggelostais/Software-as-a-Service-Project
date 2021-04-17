@@ -101,6 +101,13 @@ const useStyles = makeStyles((theme) => ({
   toolbarButtons: {
     marginLeft: 'auto',
   },
+  signButton: {
+    margin: 3,
+    "&:hover": {
+      background: "#fff",
+      color: "#000000",
+  }
+  },
   homeLink: {
     color: "inherit",
     "&:hover": {
@@ -179,6 +186,7 @@ export default function MenuAppBar() {
         {!auth && (
           <div className={classes.toolbarButtons}>
           <Button 
+            className={classes.signButton}
             color="inherit"
             fontweight="bold"
             href="/SignIn"
@@ -186,6 +194,7 @@ export default function MenuAppBar() {
             Sign In
           </Button>
           <Button 
+            className={classes.signButton}
             color="inherit"
             fontweight="bold"
             href="/SignUp"

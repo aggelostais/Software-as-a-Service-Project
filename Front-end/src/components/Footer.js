@@ -10,7 +10,7 @@ function Footer() {
                     <Link to='/'>About</Link>
                 </li>
                 <li className='footer-link-item'>
-                    <Link to='/'>Contact us</Link>
+                    <Link to='/'>Contact Us</Link>
                 </li>
                 <li className='footer-link-item'>
                     <Link to='/'>Project documentation</Link>
@@ -19,7 +19,7 @@ function Footer() {
                     <Link to='/'>Github</Link>
                 </li>
                 <li className='footer-link-item'>
-                    <Link to='/'>Course materials</Link>
+                    <Link to='/'>Course Materials</Link>
                 </li>
             </ul>
         </div>

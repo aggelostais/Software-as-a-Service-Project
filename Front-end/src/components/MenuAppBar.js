@@ -96,6 +96,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  // this group of buttons will be aligned to the right side
+  toolbarButtons: {
+    marginLeft: 'auto',
+  },
 }));
 
 
@@ -163,23 +167,22 @@ export default function MenuAppBar() {
 
         {/*If user is not signed in */}
         {!auth && (
-          <>
+          <div className={classes.toolbarButtons}>
           <Button 
             color="inherit"
             fontweight="bold"
             href="/SignIn"
-            
             >
-               
-          Sign In
+            Sign In
           </Button>
           <Button 
-          color="inherit"
-          fontweight="bold"
-          href="/SignUp">
-          Sign Up
-        </Button>
-        </>)}
+            color="inherit"
+            fontweight="bold"
+            href="/SignUp"
+            >
+            Sign Up
+          </Button>
+        </div>)}
 
         {/*If user is signed in */}
         {auth && (

@@ -9,12 +9,35 @@ const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const JWT_SECRET = 'secret-key';
 
+let users = [
+    { username: 'admin', password: 'secret' }
+]
+
 passport.use('signin', new LocalStrategy(function(username, password, done){
-  // Check if login is valid
-  if(username !== 'admin' || password !== 'secret'){
-    return done(null, false);
-  }
-  return done(null, {username: username});
+    // Check if login is valid
+    const user = users.find((user) => {
+        return user.username === username && user.password === password;
+    });
+
+    if(!user){
+        return done(null, false);
+    }
+    return done(null, {username: username});
+}));
+
+passport.use('signup', new LocalStrategy(function(username, password, done){
+    // Check if username already exists
+    const user = users.find((user) => {
+        return user.username === username;
+    });
+
+    if(!user){
+        // Register user
+        users.push({ username: username, password: password});
+        return done(null, { username: username, password: password, status: true});
+    }
+
+    return done(null, { status: false });
 }));
 
 passport.use('token', new JWTstrategy(
@@ -35,6 +58,25 @@ router.post('/signin',
         res.json({
             token: jwt.sign(req.user, JWT_SECRET, {expiresIn: 3600})
         });
+    });
+
+// POST Sign-up
+router.post('/signup',
+    passport.authenticate('signup', { session: false }),
+    function(req, res){
+        console.log(users);
+        if(req.user.status){
+            // User successfully registered
+            res.json({
+                result: 'New user added',
+                user: req.user
+            });
+        }
+        else{
+            res.json({
+                result: 'Username already exists... try something else',
+            });
+        }
     });
 
 // GET whoami

@@ -31,19 +31,26 @@ function SignUp() {
   const [password_again, setPasswordAgain] = useState("");
   const [pass_match, setMatch] = useState(true); // To check if passwords match
   const [complete,setComplete]=useState(true);
+  const [userExists, setUserExists] = useState(false); // To check if username already exists
   const { setAuthTokens } = useAuth();
 
   function postSignUp() { // Backend call for signup
     axios
-      .post("https://localhost:8765/evcharge/api/SignUp", {
+      .post("/signup", {
         username: userName,
         password: password,
       })
       .then((response) => {
         // if successfull signup backend call
-        setAuthTokens(response.data.token); // AuthTokens=token provided
-        console.log("Token provided is:\n" + response.data.token);
-        setLoggedIn(true);
+        // setAuthTokens(response.data.token); // AuthTokens=token provided
+        console.log(response.data);
+        if(response.data.user){
+          // User successfully registered
+          setLoggedIn(true);
+        }
+        else {
+          setUserExists(true);
+        }
       })
       .catch((e) => {   // If error happened during backend call
         setIsError(true);
@@ -206,16 +213,27 @@ function SignUp() {
           </Typography>
         )}
 
-         {/* All fields are not completed */}
-         {complete===false && (
-                <Typography variant="body1" gutterBottom
+        {/* All fields are not completed */}
+        {complete===false && (
+              <Typography variant="body1" gutterBottom
                   style={{ 
                     marginTop: "15px",
                     marginLeft: "30px",
                     fontWeight:"bold" }}>
                   All fields required.
-                </Typography>
-              )}
+              </Typography>
+        )}
+          
+        {/* Username already exists */}
+        {userExists && (
+              <Typography variant="body1" gutterBottom
+                style={{ 
+                  marginTop: "15px",
+                  marginLeft: "30px",
+                  fontWeight:"bold" }}>
+                This username already exists... try something else.
+              </Typography>
+        )}
 
       </div>
     </div>

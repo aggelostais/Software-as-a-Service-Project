@@ -14,7 +14,8 @@ let users = [
 ]
 
 passport.use('signin', new LocalStrategy(function(username, password, done){
-    // Check if login is valid
+
+    // Check if user exists and sign in is successful
     const user = users.find((user) => {
         return user.username === username && user.password === password;
     });
@@ -26,15 +27,16 @@ passport.use('signin', new LocalStrategy(function(username, password, done){
 }));
 
 passport.use('signup', new LocalStrategy(function(username, password, done){
+
     // Check if username already exists
     const user = users.find((user) => {
         return user.username === username;
     });
 
     if(!user){
-        // Register user
+        // Register new user
         users.push({ username: username, password: password});
-        return done(null, { username: username, password: password, status: true});
+        return done(null, {username: username, status:true});
     }
 
     return done(null, { status: false });
@@ -46,7 +48,7 @@ passport.use('token', new JWTstrategy(
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
     },
     function(token, done){
-        return done(null, { username: token.username });
+        return done(null, { username: token.username});
     }
 ));
 
@@ -68,13 +70,12 @@ router.post('/signup',
         if(req.user.status){
             // User successfully registered
             res.json({
-                result: 'New user added',
-                user: req.user
+                result: 'User ' + req.user.username + ' welcome!', status:true
             });
         }
         else{
             res.json({
-                result: 'Username already exists... try something else',
+                result: 'Username already exists, please try something else.', status:false
             });
         }
     });

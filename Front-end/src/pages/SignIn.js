@@ -1,27 +1,12 @@
 import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
 import axios from "axios";
 import {  useAuth } from "../context/auth";
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import "../components/Sessions.css";
 import "../App.css";
-
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  root: {
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-      width: '25ch',
-    },
-  },
-}));
 
 function SignIn() {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -30,6 +15,20 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [complete,setComplete]=useState(true);
   const { setAuthTokens } = useAuth();
+  const [seconds, setSeconds] = useState(6);
+
+    // Timer for Redirecting in Home page if Sign Up successful
+    React.useEffect(() => {
+
+        // If Sign In successful start timer
+        if (isLoggedIn && seconds > 1)
+            setTimeout(() => setSeconds(seconds - 1), 1000);
+
+        // If timer=0
+        else {if (isLoggedIn)
+            window.location.href = '/';
+        }
+    });
 
   function postSignIn() {
     axios
@@ -38,7 +37,7 @@ function SignIn() {
         password: password,
       })
       .then((response) => {
-        // if successfull Sign In
+        // if Sign In successful
         setAuthTokens(response.data.token); //AuthTokens=token provided
         console.log("Token provided is:\n" + response.data.token);
         setLoggedIn(true);
@@ -48,14 +47,12 @@ function SignIn() {
       });
   }
 
-  function resetFields(){ // Clears all fields
+  // Clears all fields
+  function resetFields(){
     setUserName("");
     setPassword("");
+    setIsError(false);
   } 
-
-  if (isLoggedIn) {
-    return <Redirect to="/" />;
-  }
 
   return (
     <Container maxWidth="sm">
@@ -97,6 +94,8 @@ function SignIn() {
             value={userName}
             onChange={(e) => {
               setUserName(e.target.value);
+              setComplete(true);
+              setIsError(false);
             }}
           />
           
@@ -115,6 +114,8 @@ function SignIn() {
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
+            setComplete(true);
+            setIsError(false);
           }}/>
 
           <div>
@@ -154,7 +155,7 @@ function SignIn() {
               textTransform: 'none'  }}
             type="reset"
             onClick={(e) => {
-              resetFields() // If cancel pressed, refresh page
+              resetFields() // If Reset pressed, refresh page
             }}>
             Reset
           </Button>
@@ -182,7 +183,20 @@ function SignIn() {
                   All fields required.
                 </Typography>
               )}
-        
+
+          {/*Redirection to Sign In message*/}
+          {isLoggedIn &&
+          (<Typography variant="body1" gutterBottom
+                       style={{
+                           marginTop: "15px",
+                           marginLeft: "30px",
+                           fontWeight: "bold"
+                       }}>
+                  Sign In successful!
+                  <br/>
+                  Redirecting to Home Page in {seconds} seconds.
+              </Typography>
+          )}
 
       </div>
     </div>

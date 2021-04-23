@@ -7,9 +7,6 @@ import "../components/Sessions.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1
-  },
-  root: {
     flexGrow: 1,
   },
   paper: {

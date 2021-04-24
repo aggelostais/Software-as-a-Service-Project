@@ -263,7 +263,7 @@ function SignUp(){
                                      }}>
                                 To use AskMeAnything you should Sign In.
                                 <br/>
-                                Redirecting in Sign In in {seconds} seconds.
+                                Redirecting to Sign In in {seconds} seconds.
                             </Typography>
                     )}
 

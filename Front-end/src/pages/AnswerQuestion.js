@@ -32,10 +32,11 @@ function AnswerQuestion() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [keywords, setKeywords] = useState("");
+  const [questionContent, setQuestionContent] = useState("");
   const [complete,setComplete]=useState(true);
   const { setAuthTokens } = useAuth();
   const [questions, setQuestions] = useState({});
-  let selectedQuestionId = "";
+  let [selectedQuestionId, setSelectedQuestionId] = useState("");
 
   const fetchQuestions = async () => {
       const res = await axios.get('http://localhost:3011/questions');
@@ -55,28 +56,32 @@ function AnswerQuestion() {
 
   const handleQuestionSelect = (event) => {
     selectedQuestionId = event.target.value;
+    setSelectedQuestionId(event.target.value);
     setKeywords(questions[selectedQuestionId].keywords.toString());
+    setQuestionContent(questions[selectedQuestionId].content);
   };
 
-  function postAnswerQuestion() { // Backend call for signup
-    axios
-      .post("https://localhost:8765/evcharge/api/AnswerQuestion", {
-        question: title,
-        body: body,
-        keywords: keywords
-      })
-      .then((response) => {
-        // if successfull 
-      })
-      .catch((e) => {
-        setIsError(true);
-      });
+  function postAnswerQuestion() { // Backend call for posting an answer
+    console.log('Posting an answer is not yet imlpemented')
+    // axios
+    //   .post("https://localhost:8765/evcharge/api/AnswerQuestion", {
+    //     question: title,
+    //     body: body,
+    //     keywords: keywords
+    //   })
+    //   .then((response) => {
+    //     // if successfull 
+    //   })
+    //   .catch((e) => {
+    //     setIsError(true);
+    //   });
   }
 
   function resetFields(){ // Clears all fields
     setTitle("");
     setBody("");
     setKeywords("");
+    setIsError(false);
 } 
 
   const classes = useStyles();
@@ -134,17 +139,32 @@ function AnswerQuestion() {
           label="Question Keywords"
           multiline
           placeholder="Question Keywords"
-            InputProps={{
-              readOnly: true,}}
+          InputProps={{
+            readOnly: true
+          }}
           style={{ 
             marginTop: "10px",
             marginLeft: "30px",
             marginRight: "30px",
             width:"450px" }}
           value={keywords}
-          onChange={(e) => {
-              setKeywords(e.target.value);
-            }}
+          />
+
+          {/* Question Content */}
+          <TextField
+          id="standard-textarea"
+          label="Question Content"
+          multiline
+          placeholder="Question Content"
+          InputProps={{
+            readOnly: true
+          }}
+          style={{ 
+            marginTop: "10px",
+            marginLeft: "30px",
+            marginRight: "30px",
+            width:"450px" }}
+          value={questionContent}
           />
 
           {/* Answer Text Field */}
@@ -167,20 +187,22 @@ function AnswerQuestion() {
 
           {/* Submit Button */}
           <Button
-             variant="contained" 
-             color="primary" 
-             style={{ 
+            variant="contained" 
+            color="primary" 
+            style={{ 
               marginTop: "10px", 
               marginBottom: "10px" , 
               marginLeft: "30px",
               marginRight: "10px",
               fontWeight: "bold",
-              textTransform: 'none' }}
+              textTransform: 'none' 
+            }}
             onClick={(e) => {
               e.preventDefault();
-              if(title!=="" && body!=="" && keywords!=="") {
+              if(selectedQuestionId !=="" && body!=="" && keywords!=="") {
                 setComplete(true); 
-                postAnswerQuestion();}
+                postAnswerQuestion();
+              }
               else setComplete(false);
             }}
           >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/auth";
 import Button from '@material-ui/core/Button';
@@ -34,6 +34,29 @@ function AnswerQuestion() {
   const [keywords, setKeywords] = useState("");
   const [complete,setComplete]=useState(true);
   const { setAuthTokens } = useAuth();
+  const [questions, setQuestions] = useState({});
+  let selectedQuestionId = "";
+
+  const fetchQuestions = async () => {
+      const res = await axios.get('http://localhost:3011/questions');
+
+      setQuestions(res.data);
+  }
+
+  useEffect(() => {
+      fetchQuestions();
+  }, []);
+
+  const renderedQuestions = Object.values(questions).map(question => {
+      return (
+          <MenuItem key={question.id} value={question.id}>{question.title}</MenuItem>
+      );
+  });
+
+  const handleQuestionSelect = (event) => {
+    selectedQuestionId = event.target.value;
+    setKeywords(questions[selectedQuestionId].keywords.toString());
+  };
 
   function postAnswerQuestion() { // Backend call for signup
     axios
@@ -91,17 +114,18 @@ function AnswerQuestion() {
             marginRight: "30px",
             width:"450px" }}>
           <InputLabel htmlFor="grouped-select">Question</InputLabel>
-          <Select defaultValue="" id="grouped-select">
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <ListSubheader>Category 1</ListSubheader>
-            <MenuItem value={1}>Question 1</MenuItem>
-            <MenuItem value={2}>Question 2</MenuItem>
-            <ListSubheader>Category 2</ListSubheader>
-            <MenuItem value={3}>Question 3</MenuItem>
-            <MenuItem value={4}>Question 4</MenuItem>
+
+          <Select 
+            defaultValue=''
+            id="grouped-select"
+            style={{
+              width: 400,
+            }}
+            onChange={handleQuestionSelect}
+          >
+              {renderedQuestions}
           </Select>
+
         </FormControl>
 
           {/* Question Keywords */}

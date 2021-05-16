@@ -30,12 +30,28 @@ function AskQuestion() {
   const [complete,setComplete]=useState(true);
   const { setAuthTokens } = useAuth();
 
-  function postAskQuestion() { // Backend call for signup
+  function onSubmit(event){
+    event.preventDefault();
+    setIsError(false);
+    if(title!=="" && body!=="" && keywords!=="") {
+      setComplete(true); 
+      postAskQuestion();
+    }
+    else 
+      setComplete(false);
+  }
+
+  function postAskQuestion() { // Backend call for posting a new question
+    console.log('Post question was called!');
+    console.log('title: ' + title);
+    console.log('keywords: ' + keywords);
+    console.log('body: ' + body);
+
     axios
-      .post("https://localhost:8765/evcharge/api/AskQuestion", {
-        question: title,
-        body: body,
-        keywords: keywords
+      .post("http://localhost:3011/questions", {
+        title: title,
+        keywords: keywords,
+        content: body,
       })
       .then((response) => {
         // if successfull 
@@ -43,12 +59,14 @@ function AskQuestion() {
       .catch((e) => {
         setIsError(true);
       });
+
   }
 
   function resetFields(){ // Clears all fields
     setTitle("");
     setBody("");
     setKeywords("");
+    setIsError(false);
 } 
 const classes = useStyles();
   return (
@@ -75,7 +93,7 @@ const classes = useStyles();
       </Button>
 
       <div>
-        <form>
+        <form onSubmit={onSubmit}>
 
         {/* Question Title */}
         <TextField
@@ -132,22 +150,18 @@ const classes = useStyles();
 
           {/* Submit Button */}
           <Button
-             variant="contained" 
-             color="primary" 
-             style={{ 
+            type="submit"
+            variant="contained" 
+            color="primary" 
+            style={{ 
               marginTop: "10px", 
               marginBottom: "10px" , 
               marginLeft: "30px",
               marginRight: "10px",
               fontWeight: "bold",
-              textTransform: 'none' }}
-            onClick={(e) => {
-              e.preventDefault();
-              if(title!=="" && body!=="" && keywords!=="") {
-                setComplete(true); 
-                postAskQuestion();}
-              else setComplete(false);
-            }}>
+              textTransform: 'none' 
+            }}
+            >
             Submit
           </Button>
 

@@ -12,12 +12,13 @@ import { AuthContext } from "./context/auth";
 import "./App.css";
 
 function App() {
+  // Find existing token in local storage
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
   console.log(existingTokens);
   // global state variable for token and hook (function) to update it
   const [authTokens, setAuthTokens] = useState(existingTokens); 
 
-  // Creates tokens item in local storage
+  // Creates token item in local storage
   const setTokens = (data) => {
     localStorage.setItem("tokens", JSON.stringify(data));
     setAuthTokens(data); // authTokens=data

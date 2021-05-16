@@ -36,6 +36,7 @@ function AnswerQuestion() {
   const [complete,setComplete]=useState(true);
   const { setAuthTokens } = useAuth();
   const [questions, setQuestions] = useState({});
+  const [answers, setAnswers] = useState({});
   let [selectedQuestionId, setSelectedQuestionId] = useState("");
 
   const fetchQuestions = async () => {
@@ -59,30 +60,42 @@ function AnswerQuestion() {
     setSelectedQuestionId(event.target.value);
     setKeywords(questions[selectedQuestionId].keywords.toString());
     setQuestionContent(questions[selectedQuestionId].content);
+    fetchAnswers(selectedQuestionId);
   };
 
   function postAnswerQuestion() { // Backend call for posting an answer
-    console.log('Posting an answer is not yet imlpemented')
-    // axios
-    //   .post("https://localhost:8765/evcharge/api/AnswerQuestion", {
-    //     question: title,
-    //     body: body,
-    //     keywords: keywords
-    //   })
-    //   .then((response) => {
-    //     // if successfull 
-    //   })
-    //   .catch((e) => {
-    //     setIsError(true);
-    //   });
+    axios
+      .post(`http://localhost:3012/questions/${selectedQuestionId}/answers`, {
+        answerContent: body
+      })
+      .then((response) => {
+        // if successfull 
+      })
+      .catch((e) => {
+        setIsError(true);
+      });
   }
 
   function resetFields(){ // Clears all fields
     setTitle("");
     setBody("");
-    setKeywords("");
     setIsError(false);
-} 
+    setComplete(true);
+  }
+  
+  const fetchAnswers = async (questionId) => {
+    const res = await axios.get(`http://localhost:3012/questions/${questionId}/answers`);
+
+    setAnswers(res.data);
+  }
+
+  const renderedAnswers = Object.values(answers).map(answer => {
+    return (
+        <li key={answer.id}>
+          {answer.answerContent}
+        </li>
+    );
+});
 
   const classes = useStyles();
 
@@ -248,6 +261,18 @@ function AnswerQuestion() {
               fontWeight:"bold" }}>
             All fields required.
           </Typography>
+        )}
+
+        {/* answers to selected question */}
+        {Object.entries(answers).length > 0 && (
+          <div>
+            <h6 type="text" className="text-header">
+              Other Answers
+            </h6>
+            <ul>
+              {renderedAnswers}
+            </ul>
+          </div>
         )}
 
       </div>

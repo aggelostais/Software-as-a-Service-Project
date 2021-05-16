@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/auth";
 import Button from '@material-ui/core/Button';
@@ -32,28 +32,56 @@ function AnswerQuestion() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [keywords, setKeywords] = useState("");
+  const [questionContent, setQuestionContent] = useState("");
   const [complete,setComplete]=useState(true);
   const { setAuthTokens } = useAuth();
+  const [questions, setQuestions] = useState({});
+  let [selectedQuestionId, setSelectedQuestionId] = useState("");
 
-  function postAnswerQuestion() { // Backend call for signup
-    axios
-      .post("https://localhost:8765/evcharge/api/AnswerQuestion", {
-        question: title,
-        body: body,
-        keywords: keywords
-      })
-      .then((response) => {
-        // if successfull 
-      })
-      .catch((e) => {
-        setIsError(true);
-      });
+  const fetchQuestions = async () => {
+      const res = await axios.get('http://localhost:3011/questions');
+
+      setQuestions(res.data);
+  }
+
+  useEffect(() => {
+      fetchQuestions();
+  }, []);
+
+  const renderedQuestions = Object.values(questions).map(question => {
+      return (
+          <MenuItem key={question.id} value={question.id}>{question.title}</MenuItem>
+      );
+  });
+
+  const handleQuestionSelect = (event) => {
+    selectedQuestionId = event.target.value;
+    setSelectedQuestionId(event.target.value);
+    setKeywords(questions[selectedQuestionId].keywords.toString());
+    setQuestionContent(questions[selectedQuestionId].content);
+  };
+
+  function postAnswerQuestion() { // Backend call for posting an answer
+    console.log('Posting an answer is not yet imlpemented')
+    // axios
+    //   .post("https://localhost:8765/evcharge/api/AnswerQuestion", {
+    //     question: title,
+    //     body: body,
+    //     keywords: keywords
+    //   })
+    //   .then((response) => {
+    //     // if successfull 
+    //   })
+    //   .catch((e) => {
+    //     setIsError(true);
+    //   });
   }
 
   function resetFields(){ // Clears all fields
     setTitle("");
     setBody("");
     setKeywords("");
+    setIsError(false);
 } 
 
   const classes = useStyles();
@@ -91,17 +119,18 @@ function AnswerQuestion() {
             marginRight: "30px",
             width:"450px" }}>
           <InputLabel htmlFor="grouped-select">Question</InputLabel>
-          <Select defaultValue="" id="grouped-select">
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <ListSubheader>Category 1</ListSubheader>
-            <MenuItem value={1}>Question 1</MenuItem>
-            <MenuItem value={2}>Question 2</MenuItem>
-            <ListSubheader>Category 2</ListSubheader>
-            <MenuItem value={3}>Question 3</MenuItem>
-            <MenuItem value={4}>Question 4</MenuItem>
+
+          <Select 
+            defaultValue=''
+            id="grouped-select"
+            style={{
+              width: 400,
+            }}
+            onChange={handleQuestionSelect}
+          >
+              {renderedQuestions}
           </Select>
+
         </FormControl>
 
           {/* Question Keywords */}
@@ -110,17 +139,32 @@ function AnswerQuestion() {
           label="Question Keywords"
           multiline
           placeholder="Question Keywords"
-            InputProps={{
-              readOnly: true,}}
+          InputProps={{
+            readOnly: true
+          }}
           style={{ 
             marginTop: "10px",
             marginLeft: "30px",
             marginRight: "30px",
             width:"450px" }}
           value={keywords}
-          onChange={(e) => {
-              setKeywords(e.target.value);
-            }}
+          />
+
+          {/* Question Content */}
+          <TextField
+          id="standard-textarea"
+          label="Question Content"
+          multiline
+          placeholder="Question Content"
+          InputProps={{
+            readOnly: true
+          }}
+          style={{ 
+            marginTop: "10px",
+            marginLeft: "30px",
+            marginRight: "30px",
+            width:"450px" }}
+          value={questionContent}
           />
 
           {/* Answer Text Field */}
@@ -143,20 +187,22 @@ function AnswerQuestion() {
 
           {/* Submit Button */}
           <Button
-             variant="contained" 
-             color="primary" 
-             style={{ 
+            variant="contained" 
+            color="primary" 
+            style={{ 
               marginTop: "10px", 
               marginBottom: "10px" , 
               marginLeft: "30px",
               marginRight: "10px",
               fontWeight: "bold",
-              textTransform: 'none' }}
+              textTransform: 'none' 
+            }}
             onClick={(e) => {
               e.preventDefault();
-              if(title!=="" && body!=="" && keywords!=="") {
+              if(selectedQuestionId !=="" && body!=="" && keywords!=="") {
                 setComplete(true); 
-                postAnswerQuestion();}
+                postAnswerQuestion();
+              }
               else setComplete(false);
             }}
           >

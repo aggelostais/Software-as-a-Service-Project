@@ -1,5 +1,6 @@
 const express = require('express');
 const { randomBytes } = require('crypto');
+const axios = require('axios');
 const router = express.Router();
 
 const questions = {};
@@ -29,7 +30,20 @@ router.post('/questions', function (req, res){
     content,
   };
 
+  axios.post('http://localhost:3005/events', {
+    type: 'QuestionCreated',
+    data: {
+      id
+    }
+  });
+
   res.status(201).send(questions[id]);
+});
+
+router.post('/events', function (req, res) {
+  console.log('Event Received:', req.body.type);
+
+  res.send({});
 });
 
 module.exports = router;

@@ -101,8 +101,14 @@ function AnswerQuestion() {
 
   return (
     <Container maxWidth="sm"> 
-    <div>
-      <h2 type="text" className="text-header" style={{marginTop:"100px"}}>
+    <div
+      style={{
+        marginTop: "80px",
+        maxHeight: "78vh",
+        overflowY: "scroll",
+      }}
+    >
+      <h2 type="text" className="text-header" style={{marginTop:"20px"}}>
         Answer Question
       </h2>
       <Button 

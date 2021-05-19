@@ -188,7 +188,7 @@ export default function MenuAppBar() {
           <Button 
             className={classes.signButton}
             color="inherit"
-            fontweight="bold"
+            fontWeight="bold"
             href="/SignIn"
             >
             Sign In
@@ -196,7 +196,7 @@ export default function MenuAppBar() {
           <Button 
             className={classes.signButton}
             color="inherit"
-            fontweight="bold"
+            fontWeight="bold"
             href="/SignUp"
             >
             Sign Up

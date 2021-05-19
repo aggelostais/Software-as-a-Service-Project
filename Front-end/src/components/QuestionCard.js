@@ -49,7 +49,7 @@ export default ( {question} ) => {
                 </CardContent>
                 <CardActions>
                     <Button size="small" color='secondary' onClick={() => {setShow(true)} }>Show Answers</Button>
-                    <Button size="small" color='primary'>Answer</Button>
+                    <Button size="small" color='primary' href='/AnswerQuestion' >Answer</Button>
                 </CardActions>
             </Card>                        
 

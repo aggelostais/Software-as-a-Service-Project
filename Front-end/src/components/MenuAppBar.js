@@ -20,6 +20,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import SearchIcon from '@material-ui/icons/Search';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -269,6 +270,16 @@ export default function MenuAppBar() {
         <List>
             <ListItem 
                 button component="a" // to add link in list item
+                button key="Browse Questions"
+                href="/Browse">
+              <ListItemIcon>
+                  <SearchIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Browse Questions"/>
+            </ListItem>
+
+            <ListItem 
+                button component="a" // to add link in list item
                 button key="Ask New Question"
                 href="/AskQuestion">
               <ListItemIcon>
@@ -276,6 +287,7 @@ export default function MenuAppBar() {
               </ListItemIcon>
               <ListItemText primary="Ask New Question"/>
             </ListItem>
+
             <ListItem 
                 button component="a" 
                 button key="Answer Question"

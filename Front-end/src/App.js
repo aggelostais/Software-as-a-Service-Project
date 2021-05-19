@@ -8,6 +8,7 @@ import MenuAppBar from './components/MenuAppBar';
 import Footer from './components/Footer';
 import AskQuestion from "./pages/AskQuestion";
 import AnswerQuestion from "./pages/AnswerQuestion";
+import BrowseQA from "./pages/BrowseQA";
 import { AuthContext } from "./context/auth";
 import "./App.css";
 
@@ -74,9 +75,13 @@ function App() {
             <Route path="/AnswerQuestion">
               <AnswerQuestion />
             </Route>
+            <Route path="/Browse">
+              <BrowseQA />
+            </Route>
             <Route path="/">
               <Home />
             </Route>
+            
           </Switch>
 
           {/* <button 

@@ -1,36 +1,36 @@
 const express = require('express');
-const { randomBytes } = require('crypto');
-const axios = require('axios');
+const { createAnswer, getAnswers } = require('./queries');
 const router = express.Router();
 
-const answersByQuestionId = {};
-
-router.get('/questions/:id/answers', function (req, res) {
+router.get('/questions/:id/answers', async function (req, res) {
     const questionId = req.params.id;
 
-    res.send(answersByQuestionId[questionId]);
+    const answers = await getAnswers(questionId);
+    for (let index = 0; index < answers.length; index++) {
+        const element = answers[index];
+
+        answers[index] = {
+            id: element.id,
+            question_id: element.question_id,
+            answerContent: element.content
+        }
+        
+    }
+
+    res.send(answers);
 });
 
-router.post('/questions/:id/answers', function (req, res){
-    const answerId = randomBytes(4).toString('hex');
+router.post('/questions/:id/answers', async function (req, res){
     const questionId = req.params.id;
 
     // If questionId provided is not valid
-    if (!answersByQuestionId[questionId]) {
-        console.log('Attempt to post an answer for question ' + questionId + ' but that id was not found');
-        return res.status(404).send('Invalid questionId');
-    }
+    // Do some checking
 
     const { answerContent } = req.body;
 
-    const answers = answersByQuestionId[questionId];
+    const {insertId} = await createAnswer(questionId, answerContent);
 
-    answers.push({ id: answerId, answerContent });
-
-    answersByQuestionId[questionId] = answers;
-
-    res.status(201).send(answers);
-    console.log(answersByQuestionId);
+    res.status(201).send({insertId});
 });
 
 router.post('/events', function (req, res) {
@@ -39,9 +39,7 @@ router.post('/events', function (req, res) {
     const { type, data } = req.body;
 
     if (type === 'QuestionCreated') {
-        const questionId = data.id;
         
-        answersByQuestionId[questionId] = [];
     }
   
     res.send({});

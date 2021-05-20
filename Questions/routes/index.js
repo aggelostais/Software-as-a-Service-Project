@@ -1,17 +1,16 @@
 const express = require('express');
-const { randomBytes } = require('crypto');
 const axios = require('axios');
+const { createQuestion, getQuestions } = require('./queries');
 const router = express.Router();
 
-const questions = {};
-
 /* GET all questions. */
-router.get('/questions', function(req, res) {
-  res.send(questions);
+router.get('/questions', async function(req, res) {
+  const results = await getQuestions();
+  // console.log(results);
+  res.send(results);
 });
 
-router.post('/questions', function (req, res){
-  const id = randomBytes(4).toString('hex');
+router.post('/questions', async function (req, res){
   let { title, keywords, content } = req.body;
 
   if(typeof keywords === 'string'){
@@ -23,8 +22,16 @@ router.post('/questions', function (req, res){
     return keyword.replace(/\s/g, '');
   });
 
-  questions[id] = {
-    id,
+  let new_question = {
+    title,
+    keywords,
+    content,
+  };
+
+  const {insertId} = await createQuestion(new_question);
+
+  new_question = {
+    id: insertId,
     title,
     keywords,
     content,
@@ -33,11 +40,11 @@ router.post('/questions', function (req, res){
   axios.post('http://localhost:3005/events', {
     type: 'QuestionCreated',
     data: {
-      id
+      id: insertId
     }
   });
 
-  res.status(201).send(questions[id]);
+  res.status(201).send(new_question);
 });
 
 router.post('/events', function (req, res) {

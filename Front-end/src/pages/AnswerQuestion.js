@@ -11,6 +11,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import "../components/Sessions.css";
 import "../App.css";
 
@@ -51,7 +52,7 @@ function AnswerQuestion() {
 
   const renderedQuestions = Object.values(questions).map(question => {
       return (
-          <MenuItem key={question.id} value={question.id}>{question.title}</MenuItem>
+          <MenuItem key={question.id} value={question.id}>{question.title} ({question.content})</MenuItem>
       );
   });
 
@@ -91,11 +92,12 @@ function AnswerQuestion() {
 
   const renderedAnswers = Object.values(answers).map(answer => {
     return (
-        <li key={answer.id}>
-          {answer.answerContent}
-        </li>
+        <Typography variant="body2" component="p" key={answer.id}>
+            <ArrowForwardIosIcon style={{fontSize:'small'}}/> 
+            {answer.answerContent}
+        </Typography>
     );
-});
+  });
 
   const classes = useStyles();
 
@@ -272,7 +274,13 @@ function AnswerQuestion() {
         {/* answers to selected question */}
         {Object.entries(answers).length > 0 && (
           <div>
-            <h6 type="text" className="text-header">
+            <h6 
+              type="text" 
+              className="text-header"
+              style={{ 
+              marginTop: "15px",
+              fontWeight:"bold" }}
+            >
               Other Answers
             </h6>
             <ul>

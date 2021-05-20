@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
 import "../components/Sessions.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +39,18 @@ export default function Home() {
           Welcome
         </h1>
       </div>
+
+      <Button 
+        href="/Browse"  //Redirects to Home Page
+        variant="contained" color="primary"  // Primary colour blue
+        style={{  
+          marginBottom: "20px", 
+          marginLeft: "30px",
+          fontWeight: "bold", 
+          textTransform: 'none' // Lowercase letters
+        }}>
+          Browse Questions
+      </Button>
       
       {/* Graphs Grid */}
       <Grid container className={classes.root} spacing={2}>

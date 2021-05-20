@@ -6,7 +6,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import AnswerList from '../components/AnswerList';
 
 const useStyles = makeStyles({
@@ -48,8 +47,24 @@ export default ( {question} ) => {
                     {show && <AnswerList questionId={question.id} />}
                 </CardContent>
                 <CardActions>
-                    <Button size="small" color='secondary' onClick={() => {setShow(true)} }>Show Answers</Button>
-                    <Button size="small" color='primary' href='/AnswerQuestion' >Answer</Button>
+                    <Button 
+                        size="small" 
+                        color='secondary' 
+                        onClick={() => {setShow(!show)} }
+                    >
+                        {!show && <>Show Answers</>}
+                        {show && <>Hide Answers</>}
+                    </Button>
+                    <Button 
+                        size="small" 
+                        color='primary' 
+                        href='/AnswerQuestion' 
+                        style={{ 
+                            marginLeft: "180px",
+                        }}
+                    >
+                        Answer
+                    </Button>
                 </CardActions>
             </Card>                        
 

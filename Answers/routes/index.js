@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAnswer, getAnswers } = require('./queries');
+const { createAnswer, getAnswers, createEvent } = require('./queries');
 const router = express.Router();
 
 router.get('/questions/:id/answers', async function (req, res) {
@@ -35,6 +35,7 @@ router.post('/questions/:id/answers', async function (req, res){
 
 router.post('/events', function (req, res) {
     console.log('Event Received:', req.body.type);
+    createEvent(req.body);
 
     const { type, data } = req.body;
 

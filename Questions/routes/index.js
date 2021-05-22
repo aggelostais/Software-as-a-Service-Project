@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { createQuestion, getQuestions } = require('./queries');
+const { createQuestion, getQuestions, createEvent } = require('./queries');
 const router = express.Router();
 
 /* GET all questions. */
@@ -49,6 +49,8 @@ router.post('/questions', async function (req, res){
 
 router.post('/events', function (req, res) {
   console.log('Event Received:', req.body.type);
+
+  createEvent(req.body);
 
   res.send({});
 });

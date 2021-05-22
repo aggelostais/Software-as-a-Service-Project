@@ -7,6 +7,7 @@
 const app = require('../app');
 const debug = require('debug')('questions:server');
 const http = require('http');
+const { updateEvents } = require('../routes/queries');
 
 /**
  * Get port from environment and store in Express.
@@ -87,4 +88,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
     console.log('Questions listening on ' + bind);
+    updateEvents();
 }

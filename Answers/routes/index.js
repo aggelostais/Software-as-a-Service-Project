@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAnswer, getAnswers, createEvent, createQuestion, questionValid } = require('./queries');
+const { createAnswer, getAnswers, createEvent, createQuestion, questionValid, deleteAnswer, deleteQuestion } = require('./queries');
 const router = express.Router();
 
 router.get('/questions/:id/answers', async function (req, res) {
@@ -38,6 +38,20 @@ router.post('/questions/:id/answers', async function (req, res){
     res.status(201).send({insertId});
 });
 
+router.delete('/questions/:questionId/answers/:answerId', async function(req, res){
+    const questionId = req.params.questionId;
+    const answerId = req.params.answerId;
+
+    const deleteRes = await deleteAnswer(questionId, answerId);
+
+    if(deleteRes.affectedRows > 0){
+        return res.status(200).send("OK, answer deleted");
+    }
+    else{
+        return res.status(404).send("That question - answer was not found!");
+    }
+});
+
 router.post('/events', function (req, res) {
     console.log('Event Received:', req.body.type);
     createEvent(req.body);
@@ -46,6 +60,9 @@ router.post('/events', function (req, res) {
 
     if (type === 'QuestionCreated') {
         createQuestion(data.id);
+    }
+    else if (type === 'QuestionDeleted') {
+        deleteQuestion(data.id);
     }
   
     res.send({});

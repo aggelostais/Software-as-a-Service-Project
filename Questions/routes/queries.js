@@ -126,9 +126,26 @@ const updateEvents = async () => {
     }
 }
 
+const deleteQuestion = async (questionId) => {
+    try{
+        let query = `DELETE FROM question WHERE id = ${questionId};`;
+
+        let res = await pool.query(query);
+
+        // Convert OkPacket to plain object
+        res = JSON.parse(JSON.stringify(res));
+
+        return res
+    }
+    catch(err){
+        throw err;
+    }
+}
+
 module.exports = {
     createQuestion,
     getQuestions,
     createEvent,
-    updateEvents
+    updateEvents,
+    deleteQuestion
 }

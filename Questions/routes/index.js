@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { createQuestion, getQuestions, createEvent } = require('./queries');
+const { createQuestion, getQuestions, createEvent, deleteQuestion } = require('./queries');
 const router = express.Router();
 
 /* GET all questions. */
@@ -45,6 +45,27 @@ router.post('/questions', async function (req, res){
   });
 
   res.status(201).send(new_question);
+});
+
+router.delete('/questions/:questionId', async function(req, res){
+  const questionId = req.params.questionId;
+
+  const deleteRes = await deleteQuestion(questionId);
+
+  if(deleteRes.affectedRows > 0){
+
+    axios.post('http://localhost:3005/events', {
+      type: 'QuestionDeleted',
+      data: {
+        id: questionId
+      }
+    });
+
+    return res.status(200).send("OK, question deleted");
+  }
+  else{
+    return res.status(404).send("That question was not found!");
+  }
 });
 
 router.post('/events', function (req, res) {

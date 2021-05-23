@@ -129,11 +129,46 @@ const questionValid = async (id) => {
     }
 }
 
+const deleteAnswer = async (questionId, answerId) => {
+    try{
+        let query = `DELETE FROM answer WHERE id = ${answerId} AND question_id = ${questionId};`;
+
+        let res = await pool.query(query);
+
+        // Convert OkPacket to plain object
+        res = JSON.parse(JSON.stringify(res));
+
+        return res
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+const deleteQuestion = async (questionId) => {
+    try{
+        let query = `DELETE FROM question WHERE id = ${questionId};`;
+
+        let res = await pool.query(query);
+
+        // Convert OkPacket to plain object
+        res = JSON.parse(JSON.stringify(res));
+
+        return res
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+
 module.exports = {
     createAnswer,
     getAnswers,
     createEvent,
     updateEvents,
     createQuestion,
-    questionValid
+    questionValid,
+    deleteAnswer,
+    deleteQuestion
 }

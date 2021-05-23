@@ -99,9 +99,41 @@ const updateEvents = async () => {
     }
 }
 
+const createQuestion = async (id) => {
+    try{
+        let query = `INSERT INTO question(id) VALUES(${id});`;
+
+        let res = await pool.query(query);
+
+        // Convert OkPacket to plain object
+        res = JSON.parse(JSON.stringify(res));
+
+        return res;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+const questionValid = async (id) => {
+    try{
+        let query = `SELECT * FROM question WHERE id = ${id};`;
+
+        let res = await pool.query(query);
+
+        if(res[0]) return true;
+        else return false;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
 module.exports = {
     createAnswer,
     getAnswers,
     createEvent,
-    updateEvents
+    updateEvents,
+    createQuestion,
+    questionValid
 }

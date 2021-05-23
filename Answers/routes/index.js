@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAnswer, getAnswers, createEvent } = require('./queries');
+const { createAnswer, getAnswers, createEvent, createQuestion, questionValid } = require('./queries');
 const router = express.Router();
 
 router.get('/questions/:id/answers', async function (req, res) {
@@ -25,6 +25,11 @@ router.post('/questions/:id/answers', async function (req, res){
 
     // If questionId provided is not valid
     // Do some checking
+    const questionIsValid = await questionValid(questionId);
+    if(!questionIsValid){
+        console.log(`Asked for questionId = ${questionId}, but that id was not found`);
+        return res.status(404).send("The requested id was not found!");
+    }
 
     const { answerContent } = req.body;
 
@@ -40,7 +45,7 @@ router.post('/events', function (req, res) {
     const { type, data } = req.body;
 
     if (type === 'QuestionCreated') {
-        
+        createQuestion(data.id);
     }
   
     res.send({});

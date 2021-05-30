@@ -1,6 +1,20 @@
 const express = require('express');
 const { createAnswer, getAnswers, createEvent, createQuestion, questionValid, deleteAnswer, deleteQuestion } = require('./queries');
+const passport = require('passport');
+const JWTstrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
+const JWT_SECRET = 'secret-key';
 const router = express.Router();
+
+passport.use('token', new JWTstrategy(
+    {
+        secretOrKey: JWT_SECRET,
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
+    },
+    function(token, done){
+        return done(null, { username: token.username});
+    }
+));
 
 router.get('/questions/:id/answers', async function (req, res) {
     const questionId = req.params.id;
@@ -20,36 +34,40 @@ router.get('/questions/:id/answers', async function (req, res) {
     res.send(answers);
 });
 
-router.post('/questions/:id/answers', async function (req, res){
-    const questionId = req.params.id;
+router.post('/questions/:id/answers', 
+    passport.authenticate('token', { session: false }),
+    async function (req, res){
+        const questionId = req.params.id;
 
-    // If questionId provided is not valid
-    // Do some checking
-    const questionIsValid = await questionValid(questionId);
-    if(!questionIsValid){
-        console.log(`Asked for questionId = ${questionId}, but that id was not found`);
-        return res.status(404).send("The requested id was not found!");
-    }
+        // If questionId provided is not valid
+        // Do some checking
+        const questionIsValid = await questionValid(questionId);
+        if(!questionIsValid){
+            console.log(`Asked for questionId = ${questionId}, but that id was not found`);
+            return res.status(404).send("The requested id was not found!");
+        }
 
-    const { answerContent } = req.body;
+        const { answerContent } = req.body;
 
-    const {insertId} = await createAnswer(questionId, answerContent);
+        const {insertId} = await createAnswer(questionId, answerContent);
 
-    res.status(201).send({insertId});
+        res.status(201).send({insertId});
 });
 
-router.delete('/questions/:questionId/answers/:answerId', async function(req, res){
-    const questionId = req.params.questionId;
-    const answerId = req.params.answerId;
+router.delete('/questions/:questionId/answers/:answerId', 
+    passport.authenticate('token', { session: false }),
+    async function(req, res){
+        const questionId = req.params.questionId;
+        const answerId = req.params.answerId;
 
-    const deleteRes = await deleteAnswer(questionId, answerId);
+        const deleteRes = await deleteAnswer(questionId, answerId);
 
-    if(deleteRes.affectedRows > 0){
-        return res.status(200).send("OK, answer deleted");
-    }
-    else{
-        return res.status(404).send("That question - answer was not found!");
-    }
+        if(deleteRes.affectedRows > 0){
+            return res.status(200).send("OK, answer deleted");
+        }
+        else{
+            return res.status(404).send("That question - answer was not found!");
+        }
 });
 
 router.post('/events', function (req, res) {

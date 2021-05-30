@@ -1,7 +1,21 @@
 const express = require('express');
 const axios = require('axios');
 const { createQuestion, getQuestions, createEvent, deleteQuestion } = require('./queries');
+const passport = require('passport');
+const JWTstrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
+const JWT_SECRET = 'secret-key';
 const router = express.Router();
+
+passport.use('token', new JWTstrategy(
+  {
+      secretOrKey: JWT_SECRET,
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
+  },
+  function(token, done){
+      return done(null, { username: token.username});
+  }
+));
 
 /* GET all questions. */
 router.get('/questions', async function(req, res) {
@@ -10,62 +24,66 @@ router.get('/questions', async function(req, res) {
   res.send(results);
 });
 
-router.post('/questions', async function (req, res){
-  let { title, keywords, content } = req.body;
+router.post('/questions', 
+  passport.authenticate('token', { session: false }),
+  async function (req, res){
+    let { title, keywords, content } = req.body;
 
-  if(typeof keywords === 'string'){
-    keywords = keywords.split(',');
-  }
-
-  // Remove whitespaces
-  keywords = keywords.map(keyword => {
-    return keyword.replace(/\s/g, '');
-  });
-
-  let new_question = {
-    title,
-    keywords,
-    content,
-  };
-
-  const {insertId} = await createQuestion(new_question);
-
-  new_question = {
-    id: insertId,
-    title,
-    keywords,
-    content,
-  };
-
-  axios.post('http://localhost:3005/events', {
-    type: 'QuestionCreated',
-    data: {
-      id: insertId
+    if(typeof keywords === 'string'){
+      keywords = keywords.split(',');
     }
-  });
 
-  res.status(201).send(new_question);
-});
+    // Remove whitespaces
+    keywords = keywords.map(keyword => {
+      return keyword.replace(/\s/g, '');
+    });
 
-router.delete('/questions/:questionId', async function(req, res){
-  const questionId = req.params.questionId;
+    let new_question = {
+      title,
+      keywords,
+      content,
+    };
 
-  const deleteRes = await deleteQuestion(questionId);
+    const {insertId} = await createQuestion(new_question);
 
-  if(deleteRes.affectedRows > 0){
+    new_question = {
+      id: insertId,
+      title,
+      keywords,
+      content,
+    };
 
     axios.post('http://localhost:3005/events', {
-      type: 'QuestionDeleted',
+      type: 'QuestionCreated',
       data: {
-        id: questionId
+        id: insertId
       }
     });
 
-    return res.status(200).send("OK, question deleted");
-  }
-  else{
-    return res.status(404).send("That question was not found!");
-  }
+    res.status(201).send(new_question);
+});
+
+router.delete('/questions/:questionId', 
+  passport.authenticate('token', { session: false }),
+  async function(req, res){
+    const questionId = req.params.questionId;
+
+    const deleteRes = await deleteQuestion(questionId);
+
+    if(deleteRes.affectedRows > 0){
+
+      axios.post('http://localhost:3005/events', {
+        type: 'QuestionDeleted',
+        data: {
+          id: questionId
+        }
+      });
+
+      return res.status(200).send("OK, question deleted");
+    }
+    else{
+      return res.status(404).send("That question was not found!");
+    }
 });
 
 router.post('/events', function (req, res) {

@@ -58,7 +58,7 @@ router.post('/signin',
     function(req, res){
 
         res.json({
-            token: jwt.sign(req.user, JWT_SECRET, {expiresIn: 3600})
+            token: jwt.sign(req.user, JWT_SECRET, {expiresIn: 300})
         });
     });
 

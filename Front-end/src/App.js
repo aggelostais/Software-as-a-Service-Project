@@ -70,10 +70,10 @@ function App() {
               <SignUp />
             </Route>
             <Route path="/AskQuestion">
-              <AskQuestion />
+              <AskQuestion token={authTokens}/>
             </Route>
             <Route path="/AnswerQuestion">
-              <AnswerQuestion />
+              <AnswerQuestion token={authTokens}/>
             </Route>
             <Route path="/Browse">
               <BrowseQA />

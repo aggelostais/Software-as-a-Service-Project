@@ -7,6 +7,7 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 const JWT_SECRET = 'secret-key';
 const router = express.Router();
 
+// Extract username from token?
 passport.use('token', new JWTstrategy(
   {
       secretOrKey: JWT_SECRET,
@@ -24,19 +25,20 @@ router.get('/questions', async function(req, res) {
   res.send(results);
 });
 
+/* Add new question */
 router.post('/questions', 
   passport.authenticate('token', { session: false }),
   async function (req, res){
-    let { title, keywords, content } = req.body;
+    let { title, keywords, content } = req.body; // gives title, keywords and content to body
 
     if(typeof keywords === 'string'){
       keywords = keywords.split(',');
     }
 
-    // Remove whitespaces
+    // Remove whitespaces between separator ,
     keywords = keywords.map(keyword => {
-      return keyword.replace(/\s/g, '');
-    });
+       return keyword.trim();
+     });
 
     let new_question = {
       title,
@@ -53,6 +55,7 @@ router.post('/questions',
       content,
     };
 
+    // Send a QuestionCreated object in the event-bus service
     axios.post('http://localhost:3005/events', {
       type: 'QuestionCreated',
       data: {

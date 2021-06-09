@@ -8,6 +8,7 @@ router.post('/events', async function(req, res, next) {
 
   let error = false;
 
+  // Stores event in database
   const createdEventRes = await createEvent(event).catch(e => { error = true; });
   const createdEventId = createdEventRes.insertId;
 
@@ -17,7 +18,6 @@ router.post('/events', async function(req, res, next) {
     data : JSON.parse(createdEvent.data.replace(/'/g, "\""))
   };
   // console.log(createdEvent);
-
 
 
   // Send event to Authenticator
@@ -60,6 +60,7 @@ router.post('/fetchEvents', async function(req, res) {
 
   // console.log(events);
 
+  // Makes post request for each required event to the service asking for them
   events.forEach(event => {
     axios.post(requester + '/events', event)
   });

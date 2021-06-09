@@ -91,7 +91,7 @@ const createEvent = async (event) => {
 const updateEvents = async () => {
     try{
         // fetch the latest event received
-        // Select the row with max id
+        // Select the row with max id, find the last event in Questions database
         let query = `SELECT * FROM event WHERE id IN (SELECT MAX(id) FROM event);`;
 
         let res = await pool.query(query);
@@ -103,9 +103,9 @@ const updateEvents = async () => {
         if(res[0]){
             req_obj = res[0];
             req_obj = {
-                id: req_obj.id,
+                id: req_obj.id, // Last event-id Questions database has
                 timestamp: req_obj.timestamp,
-                requester: 'http://localhost:3011'
+                requester: 'http://localhost:3011'  // Stating identity of service
             }
             // console.log(req_obj);
         }

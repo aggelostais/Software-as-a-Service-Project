@@ -37,7 +37,7 @@ const createQuestion = async (question) => {
 
 const getQuestions = async () => {
     try{
-        let query = `Select question.id, question.title, question.content, keyword.keyword FROM question JOIN keyword ON question.id = keyword.question_id ORDER BY question.id ASC;`;
+        let query = `Select question.id, question.title, question.timestamp, question.content, keyword.keyword FROM question JOIN keyword ON question.id = keyword.question_id ORDER BY question.id ASC;`;
 
         let questions = await pool.query(query);
 
@@ -46,14 +46,15 @@ const getQuestions = async () => {
 
         let renderedQuestions = {};
         for (let i = 0; i < questions.length; i++) {
-            const {id, title, content, keyword } = questions[i];
+            const {id, title,timestamp, content, keyword } = questions[i];
 
             if(!renderedQuestions[id]){
-                // if that id has not been rendered yet
+                // if id has not been rendered yet
 
                 renderedQuestions[id] = {
                     id,
                     title,
+                    timestamp,
                     keywords: [keyword],
                     content,
                 };
@@ -66,6 +67,34 @@ const getQuestions = async () => {
         return renderedQuestions;
         
     }catch(err){
+        throw err;
+    }
+}
+
+const getQuestPerKey = async () => {
+    try {
+        let query = `SELECT keyword, COUNT(*) AS related_questions FROM keyword GROUP BY keyword ORDER BY related_questions DESC;`;
+        let questions = await pool.query(query);
+
+        questions = JSON.parse(JSON.stringify(questions));
+        console.log(questions);
+        return questions;
+
+    } catch (err) {
+        throw err;
+    }
+}
+
+const getQuestPerDay = async () => {
+    try {
+        let query = `SELECT DATE(timestamp) AS date, COUNT(*) AS related_questions FROM question GROUP BY date ORDER BY date DESC;`;
+        let questions = await pool.query(query);
+
+        questions = JSON.parse(JSON.stringify(questions));
+        console.log(questions);
+        return questions;
+
+    } catch (err) {
         throw err;
     }
 }
@@ -145,6 +174,8 @@ const deleteQuestion = async (questionId) => {
 module.exports = {
     createQuestion,
     getQuestions,
+    getQuestPerKey,
+    getQuestPerDay,
     createEvent,
     updateEvents,
     deleteQuestion

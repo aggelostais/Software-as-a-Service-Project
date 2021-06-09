@@ -1,13 +1,13 @@
 const express = require('express');
 const axios = require('axios');
-const { createQuestion, getQuestions, createEvent, deleteQuestion } = require('./queries');
+const { createQuestion, getQuestions,getQuestPerKey,getQuestPerDay, createEvent, deleteQuestion } = require('./queries');
 const passport = require('passport');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const JWT_SECRET = 'secret-key';
 const router = express.Router();
 
-// Extract username from token?
+// Extract username from token
 passport.use('token', new JWTstrategy(
   {
       secretOrKey: JWT_SECRET,
@@ -18,10 +18,21 @@ passport.use('token', new JWTstrategy(
   }
 ));
 
+/* GET questions per keyword */
+router.get('/questions/PerKeyword', async function(req, res) {
+    const results = await getQuestPerKey();
+    res.send(results);
+});
+
+/* GET questions per day */
+router.get('/questions/PerDay', async function(req, res) {
+    const results = await getQuestPerDay();
+    res.send(results);
+});
+
 /* GET all questions. */
 router.get('/questions', async function(req, res) {
   const results = await getQuestions();
-  // console.log(results);
   res.send(results);
 });
 

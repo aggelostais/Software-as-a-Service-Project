@@ -46,7 +46,6 @@ const signIn = async (user)=>{
     }
     catch(err){
         console.log('SignIn Error: ' + err);
-        //res.status(400).send('error');
         throw err;
     }
 }

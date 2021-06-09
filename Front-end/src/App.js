@@ -26,6 +26,7 @@ function App() {
   };
   console.log(authTokens);
 
+  // Not used yet
   function logOut() {
     console.log("Entering Logout.\n");
     console.log(authTokens);
@@ -50,7 +51,7 @@ function App() {
       .catch((e) => {
         console.log("Error 2:" + e.body);
       });
-    setAuthTokens(null); //authTokens=null (or undifined)
+    setAuthTokens(null);
     localStorage.removeItem("tokens"); // Token deleted from local storage
   }
 
@@ -91,7 +92,6 @@ function App() {
             style={{ marginTop: "10px", marginBottom: "10px" }}  >
             Log out
           </button> */}
-
           
           <Footer />
         </BrowserRouter>

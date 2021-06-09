@@ -14,9 +14,11 @@ function AskQuestion({token}) {
   const [keywords, setKeywords] = useState("");
   const [complete,setComplete]= useState(true);
   const [authorized, setAuthorized]= useState(false);
+  const [success, setSuccess]=useState(false);
 
   function onSubmit(event){
     event.preventDefault();
+    setSuccess(false);
     setIsError(false);
     if(title!=="" && body!=="" && keywords!=="") {
       setComplete(true); 
@@ -41,7 +43,7 @@ function AskQuestion({token}) {
       {headers: {'Authorization': 'Bearer '+ token}}
       )
       .then((response) => {
-        // if successfull 
+        setSuccess(true);
       })
       .catch((e) => {
         setIsError(true);
@@ -54,12 +56,12 @@ function AskQuestion({token}) {
     setBody("");
     setKeywords("");
     setIsError(false);
+    setSuccess(false);
   } 
 
   const checkUser = async () => {
     try{
       const res = await axios.get('http://localhost:3010/whoami', { headers: {'Authorization': 'Bearer '+ token}});
-
       setAuthorized(true);
     }
     catch(error){
@@ -94,10 +96,11 @@ function AskQuestion({token}) {
           Return Home
       </Button>
 
+      {/* User Unauthorized */}
       {!authorized &&
         <div>
           <Typography>
-            You need to be logged in to ask a question
+            You need to be logged in to ask a question.
           </Typography>
           <Button 
                 href="/SignIn"  //Redirects to Sign in  Page
@@ -116,6 +119,7 @@ function AskQuestion({token}) {
         </div>
       }
 
+      {/* User Authorized */}
       {authorized &&  
         <div>
           <form onSubmit={onSubmit}>
@@ -134,6 +138,7 @@ function AskQuestion({token}) {
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
+                setSuccess(false);
               }}
               placeholder="Question Title"
             />
@@ -152,6 +157,7 @@ function AskQuestion({token}) {
             value={keywords}
             onChange={(e) => {
                 setKeywords(e.target.value);
+                setSuccess(false);
               }}
           />
 
@@ -170,6 +176,7 @@ function AskQuestion({token}) {
               value={body}
               onChange={(e) => {
                 setBody(e.target.value);
+                setSuccess(false);
               }}
           />
 
@@ -202,7 +209,7 @@ function AskQuestion({token}) {
                 fontWeight: "bold",
                 textTransform: 'none' }}
               onClick={(e) => {
-                resetFields() // If cancel pressed, clear fields
+                resetFields();
               }}>
               Reset
             </Button>
@@ -229,6 +236,17 @@ function AskQuestion({token}) {
                     All fields required.
                   </Typography>
                 )}
+
+          { success &&
+          (<Typography variant="body1" gutterBottom
+                       style={{
+                         marginLeft: "30px",
+                         fontWeight: "bold"
+                       }}>
+                <br/>
+                Question added successfully!
+              </Typography>
+          )}
         </div>
       }
     </div>

@@ -36,11 +36,11 @@ function AnswerQuestion({token}) {
   const [authorized, setAuthorized]= useState(false);
   const [questions, setQuestions] = useState({});
   const [answers, setAnswers] = useState({});
+  const [success, setSuccess]=useState(false);
   let [selectedQuestionId, setSelectedQuestionId] = useState("");
 
   const fetchQuestions = async () => {
       const res = await axios.get('http://localhost:3011/questions');
-
       setQuestions(res.data);
   }
 
@@ -67,6 +67,7 @@ function AnswerQuestion({token}) {
   });
 
   const handleQuestionSelect = (event) => {
+    setSuccess(false);
     selectedQuestionId = event.target.value;
     setSelectedQuestionId(event.target.value);
     setKeywords(questions[selectedQuestionId].keywords.toString());
@@ -82,7 +83,8 @@ function AnswerQuestion({token}) {
       {headers: {'Authorization': 'Bearer '+ token}}
       )
       .then((response) => {
-        // if successfull 
+        // if successful
+        setSuccess(true);
       })
       .catch((e) => {
         setIsError(true);
@@ -94,6 +96,7 @@ function AnswerQuestion({token}) {
     setBody("");
     setIsError(false);
     setComplete(true);
+    setSuccess(false);
   }
   
   const fetchAnswers = async (questionId) => {
@@ -139,7 +142,8 @@ function AnswerQuestion({token}) {
           }}>
           Return Home
       </Button>
-      
+
+      {/* User Unauthorized */}
       {!authorized &&
         <div>
           <Typography>
@@ -162,6 +166,7 @@ function AnswerQuestion({token}) {
         </div>
       }
 
+      {/* User Authorized */}
       {authorized &&
         <div>
           <form>
@@ -238,6 +243,7 @@ function AnswerQuestion({token}) {
               value={body}
               onChange={(e) => {
                 setBody(e.target.value);
+                setSuccess(false);
               }}
           />
 
@@ -255,6 +261,7 @@ function AnswerQuestion({token}) {
               }}
               onClick={(e) => {
                 e.preventDefault();
+                setSuccess(false);
                 if(selectedQuestionId !=="" && body!=="" && keywords!=="") {
                   setComplete(true); 
                   postAnswerQuestion();
@@ -277,7 +284,7 @@ function AnswerQuestion({token}) {
                 fontWeight: "bold",
                 textTransform: 'none' }}
               onClick={(e) => {
-                resetFields() // If cancel pressed, clear fields
+                resetFields();
               }}
             >
               Reset
@@ -306,7 +313,7 @@ function AnswerQuestion({token}) {
             </Typography>
           )}
 
-          {/* answers to selected question */}
+          {/* Answers to selected question */}
           {Object.entries(answers).length > 0 && (
             <div>
               <h6 
@@ -324,6 +331,17 @@ function AnswerQuestion({token}) {
             </div>
           )}
 
+          {/* Answer added successfully */}
+          { success &&
+          (<Typography variant="body1" gutterBottom
+                       style={{
+                         marginLeft: "30px",
+                         fontWeight: "bold"
+                       }}>
+                <br/>
+                Answer added successfully!
+              </Typography>
+          )}
         </div>
       }
       

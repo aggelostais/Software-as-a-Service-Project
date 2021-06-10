@@ -77,7 +77,7 @@ const getQuestPerKey = async () => {
         let questions = await pool.query(query);
 
         questions = JSON.parse(JSON.stringify(questions));
-        console.log(questions);
+        //console.log(questions);
         return questions;
 
     } catch (err) {
@@ -91,7 +91,7 @@ const getQuestPerDay = async () => {
         let questions = await pool.query(query);
 
         questions = JSON.parse(JSON.stringify(questions));
-        console.log(questions);
+        //console.log(questions);
         return questions;
 
     } catch (err) {

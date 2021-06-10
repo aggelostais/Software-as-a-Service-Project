@@ -21,13 +21,23 @@ passport.use('token', new JWTstrategy(
 /* GET questions per keyword */
 router.get('/questions/PerKeyword', async function(req, res) {
     const results = await getQuestPerKey();
-    res.send(results);
+    let perkeyword=[];
+    for (let i = 0; i < results.length; i++) {
+        perkeyword.push(results[i].keyword);
+        perkeyword.push(results[i].related_questions);
+    }
+    res.send(perkeyword);
 });
 
 /* GET questions per day */
 router.get('/questions/PerDay', async function(req, res) {
     const results = await getQuestPerDay();
-    res.send(results);
+    let perday=[];
+    for (let i = 0; i < results.length; i++) {
+        perday.push(results[i].date);
+        perday.push(results[i].related_questions);
+    }
+    res.send(perday);
 });
 
 /* GET all questions. */

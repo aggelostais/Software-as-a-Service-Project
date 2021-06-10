@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    marginRight: 36,
   },
   title: {
     flexGrow: 1,
@@ -51,9 +52,6 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-  },
-  menuButton: {
-    marginRight: 36,
   },
   hide: {
     display: 'none',

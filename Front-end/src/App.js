@@ -55,6 +55,7 @@ function App() {
     localStorage.removeItem("tokens"); // Token deleted from local storage
   }
 
+
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
       {/* Sets the context to authTokens, setAuthTokens*/}

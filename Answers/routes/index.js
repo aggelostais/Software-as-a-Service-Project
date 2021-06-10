@@ -26,7 +26,8 @@ router.get('/questions/:id/answers', async function (req, res) {
         answers[index] = {
             id: element.id,
             question_id: element.question_id,
-            answerContent: element.content
+            answerContent: element.content,
+            creator: element.creator
         }
         
     }

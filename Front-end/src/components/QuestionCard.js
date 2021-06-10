@@ -44,6 +44,9 @@ export default ( {question} ) => {
                     <Typography className={classes.pos} color="textSecondary">
                         {question.keywords.join(', ')}
                     </Typography>
+                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                        Asked By: {question.creator}
+                    </Typography>
                     {show && <AnswerList questionId={question.id} />}
                 </CardContent>
                 <CardActions>

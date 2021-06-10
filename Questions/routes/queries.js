@@ -37,7 +37,7 @@ const createQuestion = async (question) => {
 
 const getQuestions = async () => {
     try{
-        let query = `Select question.id, question.title, question.timestamp, question.content, keyword.keyword FROM question JOIN keyword ON question.id = keyword.question_id ORDER BY question.id ASC;`;
+        let query = `Select question.id, question.title, question.timestamp, question.content, question.creator, keyword.keyword FROM question JOIN keyword ON question.id = keyword.question_id ORDER BY question.id ASC;`;
 
         let questions = await pool.query(query);
 
@@ -46,7 +46,7 @@ const getQuestions = async () => {
 
         let renderedQuestions = {};
         for (let i = 0; i < questions.length; i++) {
-            const {id, title,timestamp, content, keyword } = questions[i];
+            const {id, title,timestamp, content, creator, keyword } = questions[i];
 
             if(!renderedQuestions[id]){
                 // if id has not been rendered yet
@@ -57,6 +57,7 @@ const getQuestions = async () => {
                     timestamp,
                     keywords: [keyword],
                     content,
+                    creator,
                 };
             }
             else{

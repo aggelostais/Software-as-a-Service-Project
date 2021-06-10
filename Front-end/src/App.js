@@ -13,47 +13,16 @@ import { AuthContext } from "./context/auth";
 import "./App.css";
 
 function App() {
-  // Find existing token in local storage
-  const existingTokens = JSON.parse(localStorage.getItem("tokens"));
-  console.log(existingTokens);
-  // global state variable for token and hook (function) to update it
-  const [authTokens, setAuthTokens] = useState(existingTokens); 
+  // Global state variable for token and hook (function) to update it
+  // Initial value: Existing token in Local Storage
+  const [authTokens, setAuthTokens] = useState(JSON.parse(localStorage.getItem("tokens")));
+  console.log("Token loaded from Local Storage: "+authTokens);
 
   // Creates token item in local storage
   const setTokens = (data) => {
     localStorage.setItem("tokens", JSON.stringify(data));
     setAuthTokens(data); // authTokens=data
   };
-  console.log(authTokens);
-
-  // Not used yet
-  function logOut() {
-    console.log("Entering Logout.\n");
-    console.log(authTokens);
-    axios.post(
-        "https://localhost:8765/evcharge/api/logout",
-        {},
-        {headers: {
-            "x-observatory-auth": authTokens,
-          },
-        }
-      )
-      .then((result) => {
-        console.log(result.data);
-        if (result.status === 200) {
-          // if successfull logout
-          console.log("Logout Successful.");
-        } else {
-          //setIsError(true);
-          console.log("Error Happened.");
-        }
-      })
-      .catch((e) => {
-        console.log("Error 2:" + e.body);
-      });
-    setAuthTokens(null);
-    localStorage.removeItem("tokens"); // Token deleted from local storage
-  }
 
 
   return (
@@ -61,7 +30,7 @@ function App() {
       {/* Sets the context to authTokens, setAuthTokens*/}
       <div className="wrapper">
         <BrowserRouter>
-        <MenuAppBar />
+        <MenuAppBar/>
 
         {/*Sets the default route paths*/}
           <Switch>
@@ -83,17 +52,8 @@ function App() {
             <Route path="/">
               <Home />
             </Route>
-            
           </Switch>
 
-          {/* <button 
-            onClick={logOut} 
-            type="button" 
-            className="button"
-            style={{ marginTop: "10px", marginBottom: "10px" }}  >
-            Log out
-          </button> */}
-          
           <Footer />
         </BrowserRouter>
       </div>

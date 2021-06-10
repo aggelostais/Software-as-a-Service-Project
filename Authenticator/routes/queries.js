@@ -33,7 +33,8 @@ const signIn = async (user)=>{
             // Compare passwords
             if(await bcrypt.compare(user.password, res.password)) {
                 // Create token
-                const accessToken = jwt.sign(user, JWT_SECRET, {expiresIn: 600});
+                const username_obj = { username: user.username};
+                const accessToken = jwt.sign(username_obj, JWT_SECRET, {expiresIn: 600});
                 return {token: accessToken};
 
             } else {

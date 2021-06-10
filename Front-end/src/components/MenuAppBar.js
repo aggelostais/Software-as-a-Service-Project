@@ -1,13 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles, useTheme} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
@@ -23,6 +20,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
 import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
 import Link from '@material-ui/core/Link'
+import axios from "axios";
+import {AuthContext} from "../context/auth";
 
 
 const drawerWidth = 240;
@@ -33,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-    marginRight: 36,
   },
   title: {
     flexGrow: 1,
@@ -98,9 +96,13 @@ const useStyles = makeStyles((theme) => ({
   },
   signButton: {
     margin: 3,
+    textTransform: "capitalize",
+    fontSize:15,
+    fontWeight:"bold",
     "&:hover": {
       background: "#fff",
       color: "#000000",
+      textTransform: "capitalize"
   }
   },
   homeLink: {
@@ -112,14 +114,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function MenuAppBar() {
   const classes = useStyles();
   const theme = useTheme();
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open2 = Boolean(anchorEl);
+  const [authTokens, setAuthTokens] = useState(JSON.parse(localStorage.getItem("tokens")));
+  let [auth,setAuth]=useState(null);
   const [open, setOpen] = React.useState(false);
+  let [user,setUser]=useState(null);
+
+  // Creates token item in local storage
+  const setTokens = (data) => {
+    localStorage.setItem("tokens", JSON.stringify(data));
+    setAuthTokens(data); // authTokens=data
+  };
+
+  // Checks if token is valid
+  const checkUser = async () => {
+    try{
+      const res = await axios.get('http://localhost:3010/whoami', { headers: {'Authorization': 'Bearer '+ authTokens}});
+      auth=true;
+      setAuth(true);
+      console.log(auth);
+      user=res.data.user.username;
+      console.log("Username is: "+user);
+  }
+    catch(error){
+      auth=false;
+      setAuth(false);
+    }
+  }
+
+   useEffect(() => {
+    checkUser();
+   }, []);
+
+  function logOut() {
+    console.log("Entering Logout.\n");
+    localStorage.removeItem("tokens"); // Token deleted from local storage
+    setAuth(false);
+    setAuthTokens(null);
+    console.log(authTokens);
+  }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -129,27 +164,15 @@ export default function MenuAppBar() {
     setOpen(false);
   };
 
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
+      <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open
-        })}
-      >
+        })}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -158,8 +181,7 @@ export default function MenuAppBar() {
             edge="start"
             className={clsx(classes.menuButton, {
               [classes.hide]: open
-            })}
-          >
+            })}>
 
         {/* AskMeAnything Logo */}
         <MenuIcon />
@@ -170,17 +192,18 @@ export default function MenuAppBar() {
           height="42px" 
           style={{marginRight:"30px"}}
         />
-        
+
+        {/*AskMeAnything Text*/}
         <Typography variant="h5" noWrap>
           <Link className={classes.homeLink} href="/">
             AskMeAnything!
           </Link>
         </Typography>
 
-        {/*If user is not signed in */}
+        {/* User not Signed In */}
         {!auth && (
           <div className={classes.toolbarButtons}>
-          <Button 
+          <Button
             className={classes.signButton}
             color="inherit"
             fontWeight="bold"
@@ -188,7 +211,7 @@ export default function MenuAppBar() {
             >
             Sign In
           </Button>
-          <Button 
+          <Button
             className={classes.signButton}
             color="inherit"
             fontWeight="bold"
@@ -198,44 +221,31 @@ export default function MenuAppBar() {
           </Button>
         </div>)}
 
-        {/*If user is signed in */}
-        {auth && (
-          <div>
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
+        {/* User Signed In */}
+        {auth &&(
+          <div className={classes.toolbarButtons}>
+            <Button
+                className={classes.signButton}
+                color="inherit"
+                fontWeight="bold"
+                href="/"
             >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={open2}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={setAuth(false)}>Log out</MenuItem>
-            </Menu>
-          </div>
-          
+              My Profile
+            </Button>
+              <Button
+                    className={classes.signButton}
+                    color="inherit"
+                    fontWeight="bold"
+                    onClick={(e)=>{logOut()}}
+                    href="/"
+                >
+                  Sign Out
+                </Button>
+            </div>
         )}
         </Toolbar>
       </AppBar>
 
-      
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -247,8 +257,7 @@ export default function MenuAppBar() {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open
           })
-        }}
-      >
+        }}>
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -260,7 +269,7 @@ export default function MenuAppBar() {
         </div>
 
 
-        <Divider />
+        <Divider/>
         <List>
             <ListItem 
                 button component="a" // to add link in list item
@@ -295,5 +304,6 @@ export default function MenuAppBar() {
         <Divider />
       </Drawer>
     </div>
+      </AuthContext.Provider>
   );
 }

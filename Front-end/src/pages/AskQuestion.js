@@ -13,7 +13,7 @@ function AskQuestion({token}) {
   const [body, setBody] = useState("");
   const [keywords, setKeywords] = useState("");
   const [complete,setComplete]= useState(true);
-  const [authorized, setAuthorized]= useState(false);
+  const [authorized, setAuthorized]= useState(true);
   const [success, setSuccess]=useState(false);
 
   function onSubmit(event){
@@ -63,6 +63,7 @@ function AskQuestion({token}) {
     try{
       const res = await axios.get('http://localhost:3010/whoami', { headers: {'Authorization': 'Bearer '+ token}});
       setAuthorized(true);
+      console.log("Ask Question authorized: "+authorized);
     }
     catch(error){
       setAuthorized(false);

@@ -33,7 +33,7 @@ function AnswerQuestion({token}) {
   const [keywords, setKeywords] = useState("");
   const [questionContent, setQuestionContent] = useState("");
   const [complete,setComplete]=useState(true);
-  const [authorized, setAuthorized]= useState(false);
+  const [authorized, setAuthorized]= useState(true);
   const [questions, setQuestions] = useState({});
   const [answers, setAnswers] = useState({});
   const [success, setSuccess]=useState(false);
@@ -57,7 +57,7 @@ function AnswerQuestion({token}) {
 
   useEffect(() => {
     checkUser();
-      fetchQuestions();
+    fetchQuestions();
   }, []);
 
   const renderedQuestions = Object.values(questions).map(question => {

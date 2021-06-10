@@ -58,13 +58,14 @@ router.post('/questions',
 
     // Remove whitespaces between separator ,
     keywords = keywords.map(keyword => {
-       return keyword.trim();
-     });
+      return keyword.trim();
+    });
 
     let new_question = {
       title,
       keywords,
       content,
+      creator: req.user.username
     };
 
     const {insertId} = await createQuestion(new_question);
@@ -74,6 +75,7 @@ router.post('/questions',
       title,
       keywords,
       content,
+      creator: req.user.username
     };
 
     // Send a QuestionCreated object in the event-bus service

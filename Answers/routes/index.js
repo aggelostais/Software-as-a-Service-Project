@@ -49,7 +49,7 @@ router.post('/questions/:id/answers',
 
         const { answerContent } = req.body;
 
-        const {insertId} = await createAnswer(questionId, answerContent);
+        const {insertId} = await createAnswer(questionId, answerContent, req.user.username);
 
         res.status(201).send({insertId});
 });

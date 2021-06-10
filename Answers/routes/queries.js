@@ -13,9 +13,9 @@ const pool  = mysql.createPool({
 
 pool.query = util.promisify(pool.query) // Magic happens here.
 
-const createAnswer = async (questionId, answerContent) => {
+const createAnswer = async (questionId, answerContent, creator) => {
     try{
-        let query = `INSERT INTO answer(question_id, content) VALUES(${questionId}, "${answerContent}");`;
+        let query = `INSERT INTO answer(question_id, content, creator) VALUES(${questionId}, "${answerContent}", "${creator}");`;
 
         let res = await pool.query(query);
 

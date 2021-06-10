@@ -15,7 +15,7 @@ pool.query = util.promisify(pool.query) // Magic happens here.
 
 const createQuestion = async (question) => {
     try{
-        let query = `INSERT INTO question(title, content) VALUES("${question.title}", "${question.content}");`;
+        let query = `INSERT INTO question(title, content, creator) VALUES("${question.title}", "${question.content}", "${question.creator}");`;
 
         let res = await pool.query(query);
 

@@ -49,15 +49,12 @@ export default function Profile({token}) {
           <Grid item xs>
             <Paper className={classes.paper}>
               <MyQuestions token={token}/>
-            <br/>
-              <MyAnswers token={token}/>
-              </Paper>
+            </Paper>
             </Grid>
       <Grid>
         <Grid item xs>
           <Paper className={classes.paper}>
               <MyAnswers token={token}/>
-            Going to be My Contributions
           </Paper>
       </Grid>
       </Grid>

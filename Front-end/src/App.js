@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import MenuAppBar from './components/MenuAppBar';
-import Footer from './components/Footer';
 import AskQuestion from "./pages/AskQuestion";
 import AnswerQuestion from "./pages/AnswerQuestion";
 import BrowseQA from "./pages/BrowseQA";
@@ -58,7 +57,6 @@ function App() {
             </Route>
           </Switch>
 
-          <Footer />
         </BrowserRouter>
       </div>
     </AuthContext.Provider>

@@ -17,11 +17,16 @@ import SearchIcon from '@material-ui/icons/Search';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
-import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
 import Link from '@material-ui/core/Link'
 import axios from "axios";
 import {AuthContext} from "../context/auth";
+import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
+import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
+import EmailIcon from '@material-ui/icons/Email';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 
 const drawerWidth = 240;
@@ -96,13 +101,13 @@ const useStyles = makeStyles((theme) => ({
   },
   signButton: {
     margin: 3,
-    textTransform: "capitalize",
     fontSize:15,
+    textTransform:"none",
     fontWeight:"bold",
     "&:hover": {
       background: "#fff",
-      color: "#000000",
-      textTransform: "capitalize"
+      color: "#000",
+      textTransform: "none"
   }
   },
   homeLink: {
@@ -132,14 +137,10 @@ export default function MenuAppBar() {
   const checkUser = async () => {
     try{
       const res = await axios.get('http://localhost:3010/whoami', { headers: {'Authorization': 'Bearer '+ authTokens}});
-      auth=true;
       setAuth(true);
-      console.log(auth);
-      user=res.data.user.username;
-      console.log("Username is: "+user);
+      setUser(res.data.user.username);
   }
     catch(error){
-      auth=false;
       setAuth(false);
     }
   }
@@ -206,7 +207,6 @@ export default function MenuAppBar() {
           <Button
             className={classes.signButton}
             color="inherit"
-            fontWeight="bold"
             href="/SignIn"
             >
             Sign In
@@ -214,7 +214,6 @@ export default function MenuAppBar() {
           <Button
             className={classes.signButton}
             color="inherit"
-            fontWeight="bold"
             href="/SignUp"
             >
             Sign Up
@@ -223,7 +222,15 @@ export default function MenuAppBar() {
 
         {/* User Signed In */}
         {auth &&(
-          <div className={classes.toolbarButtons}>
+            <div className={classes.toolbarButtons}>
+              <Button
+                  className={classes.signButton}
+                  variant="contained"
+                  disabled
+                  startIcon={<AccountCircleOutlinedIcon />}
+              >
+                {user}
+              </Button>
             <Button
                 className={classes.signButton}
                 color="inherit"
@@ -235,7 +242,6 @@ export default function MenuAppBar() {
               <Button
                     className={classes.signButton}
                     color="inherit"
-                    fontWeight="bold"
                     onClick={(e)=>{logOut()}}
                     href="/"
                 >
@@ -268,8 +274,9 @@ export default function MenuAppBar() {
           </IconButton>
         </div>
 
-
+        {/*Questions and Answers Group*/}
         <Divider/>
+
         <List>
             <ListItem 
                 button component="a" // to add link in list item
@@ -301,7 +308,60 @@ export default function MenuAppBar() {
               <ListItemText primary="Answer Question"/>
             </ListItem>
         </List>
-        <Divider />
+        <Divider/>
+
+        {/*Project Group*/}
+        <List>
+
+          {/*Documentation*/}
+          <ListItem
+              button component="a"
+              button key="Documentation"
+              href="/ProjectDoc">
+            <ListItemIcon>
+              <FindInPageIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Documentation"/>
+          </ListItem>
+
+            {/*Github*/}
+            <ListItem
+                button component="a"
+                button key="Github"
+                href="https://github.com/SokPoutas/Saas-Project">
+              <ListItemIcon>
+                <GitHubIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Github"/>
+            </ListItem>
+        </List>
+
+        {/*Contact Group*/}
+        <Divider/>
+        <List>
+
+          <ListItem
+              button component="a" // to add link in list item
+              button key="Contact"
+              href="/Contact">
+            <ListItemIcon>
+              <EmailIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Contact"/>
+          </ListItem>
+
+          <ListItem
+              button component="a" // to add link in list item
+              button key="About"
+              href="/About">
+            <ListItemIcon>
+              <InfoRoundedIcon/>
+            </ListItemIcon>
+            <ListItemText primary="About"/>
+          </ListItem>
+
+        </List>
+
       </Drawer>
     </div>
       </AuthContext.Provider>

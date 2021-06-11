@@ -38,6 +38,21 @@ function AnswerQuestion({token}) {
   const [answers, setAnswers] = useState({});
   const [success, setSuccess]=useState(false);
   let [selectedQuestionId, setSelectedQuestionId] = useState("");
+  const [seconds, setSeconds] = useState(5);
+
+
+  // Timer for Redirecting in Home page if successful
+  React.useEffect(() => {
+
+    // If Sign In successful start timer
+    if (success && seconds > 1)
+      setTimeout(() => setSeconds(seconds - 1), 1000);
+
+    // If timer=0
+    else {if (success)
+      window.location.href = '/';
+    }
+  });
 
   const fetchQuestions = async () => {
       const res = await axios.get('http://localhost:3011/questions');
@@ -340,6 +355,8 @@ function AnswerQuestion({token}) {
                        }}>
                 <br/>
                 Answer added successfully!
+                <br/>
+                Redirecting to Home Page in {seconds} seconds.
               </Typography>
           )}
         </div>

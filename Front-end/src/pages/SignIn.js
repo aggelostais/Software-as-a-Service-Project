@@ -15,7 +15,7 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [complete,setComplete]=useState(true);
   const { setAuthTokens } = useAuth();
-  const [seconds, setSeconds] = useState(6);
+  const [seconds, setSeconds] = useState(3);
 
     // Timer for Redirecting in Home page if Sign Up successful
     React.useEffect(() => {

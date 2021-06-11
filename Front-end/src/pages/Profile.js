@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import "../components/Sessions.css";
 import MyQuestions from '../components/MyQuestions';
@@ -44,12 +45,25 @@ export default function Profile({token}) {
 
   return(
       <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <MyQuestions token={token}/>
-          <MyAnswers token={token}/>
-        </Paper>
-      </div>
-  );
+        <Grid container spacing={1}>
+          <Grid item xs>
+            <Paper className={classes.paper}>
+              <MyQuestions token={token}/>
+            <br/>
+              <MyAnswers token={token}/>
+              </Paper>
+            </Grid>
+      <Grid>
+        <Grid item xs>
+          <Paper className={classes.paper}>
+              <MyAnswers token={token}/>
+            Going to be My Contributions
+          </Paper>
+      </Grid>
+      </Grid>
+     </Grid>
+ </div>
+);
 }
 
 

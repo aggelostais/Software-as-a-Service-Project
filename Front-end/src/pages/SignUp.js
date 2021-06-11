@@ -14,7 +14,7 @@ function SignUp(){
     const [status,setStatus]=useState(false);
     const [submit,setSubmit]=useState(false);
     const [error,setError]=useState(false);
-    const [seconds, setSeconds] = useState(6);
+    const [seconds, setSeconds] = useState(3);
 
     // Timer for Redirecting in Sign In page if Sign Up successful
     React.useEffect(() => {

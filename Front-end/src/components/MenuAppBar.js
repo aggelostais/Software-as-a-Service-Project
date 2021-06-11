@@ -22,6 +22,7 @@ import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutline
 import Link from '@material-ui/core/Link'
 import axios from "axios";
 import {AuthContext} from "../context/auth";
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
 
 const drawerWidth = 240;
@@ -96,13 +97,13 @@ const useStyles = makeStyles((theme) => ({
   },
   signButton: {
     margin: 3,
-    textTransform: "capitalize",
     fontSize:15,
+    textTransform:"none",
     fontWeight:"bold",
     "&:hover": {
       background: "#fff",
-      color: "#000000",
-      textTransform: "capitalize"
+      color: "#000",
+      textTransform: "none"
   }
   },
   homeLink: {
@@ -132,14 +133,10 @@ export default function MenuAppBar() {
   const checkUser = async () => {
     try{
       const res = await axios.get('http://localhost:3010/whoami', { headers: {'Authorization': 'Bearer '+ authTokens}});
-      auth=true;
       setAuth(true);
-      console.log(auth);
-      user=res.data.user.username;
-      console.log("Username is: "+user);
+      setUser(res.data.user.username);
   }
     catch(error){
-      auth=false;
       setAuth(false);
     }
   }
@@ -206,7 +203,6 @@ export default function MenuAppBar() {
           <Button
             className={classes.signButton}
             color="inherit"
-            fontWeight="bold"
             href="/SignIn"
             >
             Sign In
@@ -214,7 +210,6 @@ export default function MenuAppBar() {
           <Button
             className={classes.signButton}
             color="inherit"
-            fontWeight="bold"
             href="/SignUp"
             >
             Sign Up
@@ -223,11 +218,18 @@ export default function MenuAppBar() {
 
         {/* User Signed In */}
         {auth &&(
-          <div className={classes.toolbarButtons}>
+            <div className={classes.toolbarButtons}>
+              <Button
+                  className={classes.signButton}
+                  variant="contained"
+                  disabled
+                  startIcon={<AccountCircleOutlinedIcon />}
+              >
+                {user}
+              </Button>
             <Button
                 className={classes.signButton}
                 color="inherit"
-                fontWeight="bold"
                 href="/"
             >
               My Profile
@@ -235,7 +237,6 @@ export default function MenuAppBar() {
               <Button
                     className={classes.signButton}
                     color="inherit"
-                    fontWeight="bold"
                     onClick={(e)=>{logOut()}}
                     href="/"
                 >

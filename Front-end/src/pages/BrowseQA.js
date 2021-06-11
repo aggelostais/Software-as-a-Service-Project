@@ -3,6 +3,7 @@ import Container from '@material-ui/core/Container';
 import Grid from "@material-ui/core/Grid";
 import axios from 'axios';
 import QuestionCard from '../components/QuestionCard';
+import Button from "@material-ui/core/Button";
 
 export default function BrowseQA() {
     const [questions, setQuestions] = useState({});
@@ -30,9 +31,27 @@ export default function BrowseQA() {
         <Container 
             maxWidth="md"
         >
+            <h2 type="text" className="text-header" style={{marginTop:"100px"}}>
+                Browse Questions
+            </h2>
+
+            {/* Return Home Button */}
+            <Button
+                href="/"  //Redirects to Home Page
+                variant="contained" color="primary"  // Primary colour blue
+                style={{
+                    width: "150px",
+                    marginTop: "15px",
+                    marginBottom: "20px",
+                    marginLeft: "30px",
+                    marginRight: "10px",
+                    fontWeight: "bold",
+                    textTransform: 'none' // Small letters in button text
+                }}>
+                Return Home
+            </Button>
             <div
                 style={{
-                    marginTop: "80px",
                     maxHeight: "78vh",
                     overflowX: "hidden",
                     overflowY: "scroll",

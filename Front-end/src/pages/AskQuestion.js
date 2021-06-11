@@ -15,6 +15,21 @@ function AskQuestion({token}) {
   const [complete,setComplete]= useState(true);
   const [authorized, setAuthorized]= useState(true);
   const [success, setSuccess]=useState(false);
+  const [seconds, setSeconds] = useState(5);
+
+
+  // Timer for Redirecting in Home page if successful
+  React.useEffect(() => {
+
+    // If Sign In successful start timer
+    if (success && seconds > 1)
+      setTimeout(() => setSeconds(seconds - 1), 1000);
+
+    // If timer=0
+    else {if (success)
+      window.location.href = '/';
+    }
+  });
 
   function onSubmit(event){
     event.preventDefault();
@@ -75,7 +90,7 @@ function AskQuestion({token}) {
   }, []);
 
   return (
-    <Container maxWidth="sm"> 
+    <Container maxWidth="sm">
     <div>
       <h2 type="text" className="text-header" style={{marginTop:"100px"}}>
         Ask a New Question
@@ -246,6 +261,8 @@ function AskQuestion({token}) {
                        }}>
                 <br/>
                 Question added successfully!
+                <br/>
+                Redirecting to Home Page in {seconds} seconds.
               </Typography>
           )}
         </div>

@@ -17,12 +17,16 @@ import SearchIcon from '@material-ui/icons/Search';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
-import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
 import Link from '@material-ui/core/Link'
 import axios from "axios";
 import {AuthContext} from "../context/auth";
+import QuestionAnswerOutlinedIcon from "@material-ui/icons/QuestionAnswerOutlined";
+import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
+import EmailIcon from '@material-ui/icons/Email';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 
 const drawerWidth = 240;
@@ -269,8 +273,9 @@ export default function MenuAppBar() {
           </IconButton>
         </div>
 
-
+        {/*Questions and Answers Group*/}
         <Divider/>
+
         <List>
             <ListItem 
                 button component="a" // to add link in list item
@@ -302,7 +307,60 @@ export default function MenuAppBar() {
               <ListItemText primary="Answer Question"/>
             </ListItem>
         </List>
-        <Divider />
+        <Divider/>
+
+        {/*Project Group*/}
+        <List>
+
+          {/*Documentation*/}
+          <ListItem
+              button component="a"
+              button key="Documentation"
+              href="/ProjectDoc">
+            <ListItemIcon>
+              <FindInPageIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Documentation"/>
+          </ListItem>
+
+            {/*Github*/}
+            <ListItem
+                button component="a"
+                button key="Github"
+                href="https://github.com/SokPoutas/Saas-Project">
+              <ListItemIcon>
+                <GitHubIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Github"/>
+            </ListItem>
+        </List>
+
+        {/*Contact Group*/}
+        <Divider/>
+        <List>
+
+          <ListItem
+              button component="a" // to add link in list item
+              button key="Contact"
+              href="/Contact">
+            <ListItemIcon>
+              <EmailIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Contact"/>
+          </ListItem>
+
+          <ListItem
+              button component="a" // to add link in list item
+              button key="About"
+              href="/About">
+            <ListItemIcon>
+              <InfoRoundedIcon/>
+            </ListItemIcon>
+            <ListItemText primary="About"/>
+          </ListItem>
+
+        </List>
+
       </Drawer>
     </div>
       </AuthContext.Provider>

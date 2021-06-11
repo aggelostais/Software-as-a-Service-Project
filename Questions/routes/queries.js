@@ -72,6 +72,49 @@ const getQuestions = async () => {
     }
 }
 
+const getMyQuestions = async (username) => {
+    try{
+        let query = `Select question.id, question.title, DATE(question.timestamp) AS date, question.content, 
+        question.creator, keyword.keyword 
+        FROM question 
+        JOIN keyword 
+        ON question.id = keyword.question_id 
+        WHERE question.creator="${username}" 
+        ORDER BY question.timestamp DESC;`;
+
+        let questions = await pool.query(query);
+
+        // Convert OkPacket to plain object
+        questions = JSON.parse(JSON.stringify(questions));
+
+        let renderedQuestions = {};
+        for (let i = 0; i < questions.length; i++) {
+            const {id, title, date, content, creator, keyword } = questions[i];
+
+            if(!renderedQuestions[id]){
+                // if id has not been rendered yet
+
+                renderedQuestions[id] = {
+                    id,
+                    title,
+                    date,
+                    keywords: [keyword],
+                    content,
+                    creator,
+                };
+            }
+            else{
+                renderedQuestions[id].keywords.push(keyword)
+            }
+        }
+        
+        return renderedQuestions;
+        
+    }catch(err){
+        throw err;
+    }
+}
+
 const getQuestPerKey = async () => {
     try {
         let query = `SELECT keyword, COUNT(*) AS related_questions FROM keyword GROUP BY keyword ORDER BY related_questions DESC;`;
@@ -175,6 +218,7 @@ const deleteQuestion = async (questionId) => {
 module.exports = {
     createQuestion,
     getQuestions,
+    getMyQuestions,
     getQuestPerKey,
     getQuestPerDay,
     createEvent,

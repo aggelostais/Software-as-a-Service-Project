@@ -99,9 +99,9 @@ const updateEvents = async () => {
     }
 }
 
-const createQuestion = async (id) => {
+const createQuestion = async (id, title) => {
     try{
-        let query = `INSERT INTO question(id) VALUES(${id});`;
+        let query = `INSERT INTO question(id, title) VALUES(${id}, "${title}");`;
 
         let res = await pool.query(query);
 
@@ -161,10 +161,32 @@ const deleteQuestion = async (questionId) => {
     }
 }
 
+const getMyAnswers = async (username) => {
+    try{
+        let query = `Select answer.id, answer.content, answer.creator, DATE(answer.timestamp) AS date, question.title AS question_title
+        FROM answer 
+        JOIN question
+        ON question.id = answer.question_id  
+        WHERE answer.creator="${username}" 
+        ORDER BY answer.timestamp DESC;`;
+
+        let answers = await pool.query(query);
+
+        // Convert OkPacket to plain object
+        answers = JSON.parse(JSON.stringify(answers));
+        
+        return answers;
+        
+    }catch(err){
+        throw err;
+    }
+}
+
 
 module.exports = {
     createAnswer,
     getAnswers,
+    getMyAnswers,
     createEvent,
     updateEvents,
     createQuestion,

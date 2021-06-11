@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAnswer, getAnswers, createEvent, createQuestion, questionValid, deleteAnswer, deleteQuestion } = require('./queries');
+const { createAnswer, getAnswers, getMyAnswers, createEvent, createQuestion, questionValid, deleteAnswer, deleteQuestion } = require('./queries');
 const passport = require('passport');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
@@ -71,6 +71,14 @@ router.delete('/questions/:questionId/answers/:answerId',
         }
 });
 
+/* GET my Ansers */
+router.get('/myAnswers', 
+  passport.authenticate('token', { session: false }),
+  async function(req, res) {
+    const myAnswers = await getMyAnswers(req.user.username);
+    res.send(myAnswers);
+});
+
 router.post('/events', function (req, res) {
     console.log('Event Received:', req.body.type);
     createEvent(req.body);
@@ -78,7 +86,7 @@ router.post('/events', function (req, res) {
     const { type, data } = req.body;
 
     if (type === 'QuestionCreated') {
-        createQuestion(data.id);
+        createQuestion(data.id, data.title);
     }
     else if (type === 'QuestionDeleted') {
         deleteQuestion(data.id);

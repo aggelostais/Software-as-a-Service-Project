@@ -228,7 +228,7 @@ export default function MenuAppBar() {
                 className={classes.signButton}
                 color="inherit"
                 fontWeight="bold"
-                href="/"
+                href="/Profile"
             >
               My Profile
             </Button>

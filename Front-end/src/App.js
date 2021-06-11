@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import AskQuestion from "./pages/AskQuestion";
 import AnswerQuestion from "./pages/AnswerQuestion";
 import BrowseQA from "./pages/BrowseQA";
+import Profile from "./pages/Profile";
 import { AuthContext } from "./context/auth";
 import "./App.css";
 
@@ -48,6 +49,9 @@ function App() {
             </Route>
             <Route path="/Browse">
               <BrowseQA />
+            </Route>
+            <Route path="/Profile">
+              <Profile token={authTokens}/>
             </Route>
             <Route path="/">
               <Home />

@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { createQuestion, getQuestions,getQuestPerKey,getQuestPerDay, createEvent, deleteQuestion } = require('./queries');
+const { createQuestion, getQuestions, getMyQuestions, getQuestPerKey,getQuestPerDay, createEvent, deleteQuestion } = require('./queries');
 const passport = require('passport');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
@@ -17,6 +17,14 @@ passport.use('token', new JWTstrategy(
       return done(null, { username: token.username});
   }
 ));
+
+/* GET my Questions */
+router.get('/questions/myQuestions', 
+  passport.authenticate('token', { session: false }),
+  async function(req, res) {
+    const myQuestions = await getMyQuestions(req.user.username);
+    res.send(myQuestions);
+});
 
 /* GET questions per keyword */
 router.get('/questions/PerKeyword', async function(req, res) {
@@ -82,7 +90,8 @@ router.post('/questions',
     axios.post('http://localhost:3005/events', {
       type: 'QuestionCreated',
       data: {
-        id: insertId
+        id: insertId,
+        title: new_question.title
       }
     });
 

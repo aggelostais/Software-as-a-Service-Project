@@ -11,6 +11,15 @@ const AuthorizedToken = async (token) => {
     return authorizationRes.data.user;
 }
 
+const ValidateQuestion = async (questionId) => {
+    const reqBody = {
+        actionType: 'ValidateQuestion',
+        parameters: [questionId]
+    }
+    const validationRes = await axios.post('http://localhost:4000/serivceExecution', reqBody);
+    return validationRes.data.result;
+}
+
 router.get('/questions/:id/answers', async function (req, res) {
     const questionId = req.params.id;
 
@@ -44,7 +53,9 @@ router.post('/questions/:id/answers',
 
         // If questionId provided is not valid
         // Do some checking
-        const {data:questionIsValid}= await axios.post(`http://localhost:3020/questionValid`, {question_id:questionId});
+        // const {data:questionIsValid}= await axios.post(`http://localhost:3020/questionValid`, {question_id:questionId});
+        const questionIsValid = await ValidateQuestion(questionId);
+
         if(!questionIsValid){
             console.log(`Asked for questionId = ${questionId}, but that id was not found`);
             return res.status(404).send("The requested id was not found!");

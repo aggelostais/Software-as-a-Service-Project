@@ -54,6 +54,13 @@ router.get('/questions', async function(req, res) {
     res.send(results);
 });
 
+/* GET question by id. */
+router.get('/questions/:questionId', async function(req, res) {
+  const questionId = req.params.questionId;
+  const {data:questionIsValid}= await axios.post(`http://localhost:3020/questionValid`, {question_id:questionId} );
+  res.send(questionIsValid);
+});
+
 /* Add new question */
 router.post('/questions', 
   async function (req, res){

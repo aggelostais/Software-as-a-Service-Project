@@ -7,6 +7,7 @@
 const app = require('../app');
 const debug = require('debug')('questions:server');
 const http = require('http');
+const axios = require('axios');
 
 /**
  * Get port from environment and store in Express.
@@ -87,4 +88,9 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
     console.log('Questions listening on ' + bind);
+    const informBody = {
+      actionType: 'ValidateQuestion',
+      endpoint: 'http://localhost:3011/questions'
+    }
+    axios.post('http://localhost:4000/serivceManagement', informBody);
 }

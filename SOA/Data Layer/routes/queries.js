@@ -16,6 +16,8 @@ const pool  = mysql.createPool({
 
 pool.query = util.promisify(pool.query) // Magic happens here.
 
+
+ // Question Queries
 const createQuestion = async (question) => {
     try{
         let query = `INSERT INTO question(title, content, creator) VALUES(
@@ -149,24 +151,6 @@ const getQuestPerDay = async () => {
     }
 }
 
-const createEvent = async (event) => {
-    try{
-        const data = (JSON.stringify(event.data)).replace(/"/g, "\'");
-        let query = `INSERT INTO event(id, timestamp, type, data) VALUES(${event.id}, "${event.timestamp}", "${event.type}", "${data}");`;
-        // console.log(query);
-
-        let res = await pool.query(query);
-
-        // Convert OkPacket to plain object
-        res = JSON.parse(JSON.stringify(res));
-
-        return res;
-        
-    }catch(err){
-        throw err;
-    }
-}
-
 const deleteQuestion = async (questionId) => {
     try{
         let query = `DELETE FROM question WHERE id = ${questionId};`;
@@ -183,7 +167,7 @@ const deleteQuestion = async (questionId) => {
     }
 }
 
-
+// Answer Queries
 const createAnswer = async (answer) => {
     try{
         console.log(answer);
@@ -266,6 +250,7 @@ const getMyAnswers = async (username) => {
     }
 }
 
+// Authentication Queries
 const signIn = async (user)=>{
     try{
         console.log(user);
@@ -346,7 +331,6 @@ module.exports = {
     getMyQuestions,
     getQuestPerKey,
     getQuestPerDay,
-    createEvent,
     deleteQuestion,
     createAnswer,
     getAnswers,

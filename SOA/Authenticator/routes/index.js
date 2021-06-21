@@ -74,11 +74,5 @@ router.get('/whoami',
             user: req.user
         });
     });
-//
-// router.post('/events', function (req, res) {
-//     console.log('Event Received:', req.body.type);
-//
-//     res.send({});
-// });
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 const router = express.Router();
-const {signIn, signUp}= require('./queries');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const jwt = require('jsonwebtoken');
@@ -24,7 +24,8 @@ passport.use('token', new JWTstrategy(
 router.post('/signin',
     async function(req, res){
     try{
-        const result=  await signIn({username:req.body.username, password:req.body.password});
+        const {data:result}= await axios.post(`http://localhost:3020/signIn`, {username:req.body.username, password:req.body.password});
+        console.log(result);
 
         if (result.token==='Invalid password.')
             return res.status(400).send('Invalid password.');
@@ -46,7 +47,8 @@ router.post('/signup',
         const username = req.body.username;
         const hashed_password = await bcrypt.hash(req.body.password, 10);
 
-        const result= await signUp({username:username, password:hashed_password});
+        const {data:result}= await axios.post(`http://localhost:3020/signUp`, {username:username, password:hashed_password});
+        console.log(result);
 
         // Username already exists
         if(!result){
@@ -59,7 +61,7 @@ router.post('/signup',
             result: 'User ' + req.body.username + ' welcome!', status:true});
     }
     catch(e){
-        console.log('Sign In Error: ' + e);
+        console.log('Sign Up Error: ' + e);
         res.status(400).send('error');
     }
 });
@@ -72,11 +74,11 @@ router.get('/whoami',
             user: req.user
         });
     });
-
-router.post('/events', function (req, res) {
-    console.log('Event Received:', req.body.type);
-    
-    res.send({});
-});
+//
+// router.post('/events', function (req, res) {
+//     console.log('Event Received:', req.body.type);
+//
+//     res.send({});
+// });
 
 module.exports = router;

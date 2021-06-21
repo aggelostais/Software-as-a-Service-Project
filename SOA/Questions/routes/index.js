@@ -1,6 +1,5 @@
 const express = require('express');
 const axios = require('axios');
-const { createQuestion, getQuestions, getMyQuestions, getQuestPerKey,getQuestPerDay, createEvent, deleteQuestion } = require('./queries');
 const passport = require('passport');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
@@ -22,13 +21,14 @@ passport.use('token', new JWTstrategy(
 router.get('/questions/myQuestions', 
   passport.authenticate('token', { session: false }),
   async function(req, res) {
-    const myQuestions = await getMyQuestions(req.user.username);
-    res.send(myQuestions);
+    const user=req.user.username;
+    const {data:result}= await axios.post(`http://localhost:3020/getMyQuestions`, {user});
+    res.send(result);
 });
 
 /* GET questions per keyword */
 router.get('/questions/PerKeyword', async function(req, res) {
-    const results = await getQuestPerKey();
+    const {data:results}= await axios.post(`http://localhost:3020/getQuestPerKey`);
     let perkeyword=[];
     for (let i = 0; i < results.length; i++) {
         perkeyword.push(results[i].keyword);
@@ -39,7 +39,8 @@ router.get('/questions/PerKeyword', async function(req, res) {
 
 /* GET questions per day */
 router.get('/questions/PerDay', async function(req, res) {
-    const results = await getQuestPerDay();
+    const {data:results}= await axios.post(`http://localhost:3020/getQuestPerDay`);
+    console.log(results);
     let perday=[];
     for (let i = 0; i < results.length; i++) {
         perday.push(results[i].date);
@@ -50,8 +51,8 @@ router.get('/questions/PerDay', async function(req, res) {
 
 /* GET all questions. */
 router.get('/questions', async function(req, res) {
-  const results = await getQuestions();
-  res.send(results);
+    const {data:results}= await axios.post(`http://localhost:3020/getQuestions`);
+    res.send(results);
 });
 
 /* Add new question */
@@ -76,7 +77,7 @@ router.post('/questions',
       creator: req.user.username
     };
 
-    const {insertId} = await createQuestion(new_question);
+    const {data:{insertId}} = await axios.post(`http://localhost:3020/createQuestion`, {new_question});
 
     new_question = {
       id: insertId,
@@ -85,15 +86,15 @@ router.post('/questions',
       content,
       creator: req.user.username
     };
-
-    // Send a QuestionCreated object in the event-bus service
-    axios.post('http://localhost:3005/events', {
-      type: 'QuestionCreated',
-      data: {
-        id: insertId,
-        title: new_question.title
-      }
-    });
+    //
+    // // Send a QuestionCreated object in the event-bus service
+    // axios.post('http://localhost:3005/events', {
+    //   type: 'QuestionCreated',
+    //   data: {
+    //     id: insertId,
+    //     title: new_question.title
+    //   }
+    // });
 
     res.status(201).send(new_question);
 });
@@ -103,16 +104,16 @@ router.delete('/questions/:questionId',
   async function(req, res){
     const questionId = req.params.questionId;
 
-    const deleteRes = await deleteQuestion(questionId);
+    const {data:deleteRes} = await axios.post(`http://localhost:3020/deleteQuestion`,{questionId});
 
     if(deleteRes.affectedRows > 0){
 
-      axios.post('http://localhost:3005/events', {
-        type: 'QuestionDeleted',
-        data: {
-          id: questionId
-        }
-      });
+      // axios.post('http://localhost:3005/events', {
+      //   type: 'QuestionDeleted',
+      //   data: {
+      //     id: questionId
+      //   }
+      // });
 
       return res.status(200).send("OK, question deleted");
     }
@@ -121,12 +122,12 @@ router.delete('/questions/:questionId',
     }
 });
 
-router.post('/events', function (req, res) {
-  console.log('Event Received:', req.body.type);
-
-  createEvent(req.body);
-
-  res.send({});
-});
+// router.post('/events', function (req, res) {
+//   console.log('Event Received:', req.body.type);
+//
+//   createEvent(req.body);
+//
+//   res.send({});
+// });
 
 module.exports = router;

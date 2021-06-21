@@ -7,12 +7,13 @@
 const app = require('../app');
 const debug = require('debug')('questions:server');
 const http = require('http');
+// const { updateEvents } = require('../routes/queries');
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3011');
+const port = normalizePort(process.env.PORT || '3020');
 app.set('port', port);
 
 /**
@@ -86,5 +87,6 @@ function onListening() {
   let bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-    console.log('Questions listening on ' + bind);
+    console.log('Data Layer listening on ' + bind);
+    // updateEvents(); // Sends a request to the event-bus /fetch-events
 }

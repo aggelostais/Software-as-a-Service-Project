@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAnswer, getAnswers, getMyAnswers, createEvent, createQuestion, questionValid, deleteAnswer, deleteQuestion } = require('./queries');
+const { default: axios } = require('axios');
 const passport = require('passport');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
@@ -19,7 +19,8 @@ passport.use('token', new JWTstrategy(
 router.get('/questions/:id/answers', async function (req, res) {
     const questionId = req.params.id;
 
-    const answers = await getAnswers(questionId);
+    const {data:answers}= await axios.post(`http://localhost:3020/getAnswers`, {question_id:questionId});
+    console.log(answers);
     for (let index = 0; index < answers.length; index++) {
         const element = answers[index];
 
@@ -42,15 +43,18 @@ router.post('/questions/:id/answers',
 
         // If questionId provided is not valid
         // Do some checking
-        const questionIsValid = await questionValid(questionId);
+        const {data:questionIsValid}= await axios.post(`http://localhost:3020/questionValid`, {question_id:questionId});
         if(!questionIsValid){
             console.log(`Asked for questionId = ${questionId}, but that id was not found`);
             return res.status(404).send("The requested id was not found!");
         }
 
-        const { answerContent } = req.body;
+        const user=req.user.username;
+        const {answerContent} = req.body;
 
-        const {insertId} = await createAnswer(questionId, answerContent, req.user.username);
+        console.log("User:"+user+", answer: "+answerContent);
+
+        const {insertId} = await axios.post(`http://localhost:3020/createAnswer`, {question_id:questionId,answer_content:answerContent,creator:user});
 
         res.status(201).send({insertId});
 });
@@ -61,7 +65,7 @@ router.delete('/questions/:questionId/answers/:answerId',
         const questionId = req.params.questionId;
         const answerId = req.params.answerId;
 
-        const deleteRes = await deleteAnswer(questionId, answerId);
+        const {data:deleteRes}= await axios.post(`http://localhost:3020/deleteAnswer`, {question_id:questionId,answer_id:answerId});
 
         if(deleteRes.affectedRows > 0){
             return res.status(200).send("OK, answer deleted");
@@ -71,28 +75,29 @@ router.delete('/questions/:questionId/answers/:answerId',
         }
 });
 
-/* GET my Ansers */
+/* GET my Answers */
 router.get('/myAnswers', 
   passport.authenticate('token', { session: false }),
   async function(req, res) {
-    const myAnswers = await getMyAnswers(req.user.username);
+    const user=req.user.username;
+    const {data:myAnswers}= await axios.post(`http://localhost:3020/getMyAnswers`, {user});
     res.send(myAnswers);
 });
 
-router.post('/events', function (req, res) {
-    console.log('Event Received:', req.body.type);
-    createEvent(req.body);
-
-    const { type, data } = req.body;
-
-    if (type === 'QuestionCreated') {
-        createQuestion(data.id, data.title);
-    }
-    else if (type === 'QuestionDeleted') {
-        deleteQuestion(data.id);
-    }
-  
-    res.send({});
-});
+// router.post('/events', function (req, res) {
+//     console.log('Event Received:', req.body.type);
+//     createEvent(req.body);
+//
+//     const { type, data } = req.body;
+//
+//     if (type === 'QuestionCreated') {
+//         createQuestion(data.id, data.title);
+//     }
+//     else if (type === 'QuestionDeleted') {
+//         deleteQuestion(data.id);
+//     }
+//
+//     res.send({});
+// });
 
 module.exports = router;

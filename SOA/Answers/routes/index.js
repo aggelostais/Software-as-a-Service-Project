@@ -84,20 +84,4 @@ router.get('/myAnswers',
     res.send(myAnswers);
 });
 
-// router.post('/events', function (req, res) {
-//     console.log('Event Received:', req.body.type);
-//     createEvent(req.body);
-//
-//     const { type, data } = req.body;
-//
-//     if (type === 'QuestionCreated') {
-//         createQuestion(data.id, data.title);
-//     }
-//     else if (type === 'QuestionDeleted') {
-//         deleteQuestion(data.id);
-//     }
-//
-//     res.send({});
-// });
-
 module.exports = router;

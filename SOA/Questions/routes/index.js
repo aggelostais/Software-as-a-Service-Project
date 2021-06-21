@@ -86,15 +86,6 @@ router.post('/questions',
       content,
       creator: req.user.username
     };
-    //
-    // // Send a QuestionCreated object in the event-bus service
-    // axios.post('http://localhost:3005/events', {
-    //   type: 'QuestionCreated',
-    //   data: {
-    //     id: insertId,
-    //     title: new_question.title
-    //   }
-    // });
 
     res.status(201).send(new_question);
 });
@@ -108,26 +99,11 @@ router.delete('/questions/:questionId',
 
     if(deleteRes.affectedRows > 0){
 
-      // axios.post('http://localhost:3005/events', {
-      //   type: 'QuestionDeleted',
-      //   data: {
-      //     id: questionId
-      //   }
-      // });
-
       return res.status(200).send("OK, question deleted");
     }
     else{
       return res.status(404).send("That question was not found!");
     }
 });
-
-// router.post('/events', function (req, res) {
-//   console.log('Event Received:', req.body.type);
-//
-//   createEvent(req.body);
-//
-//   res.send({});
-// });
 
 module.exports = router;

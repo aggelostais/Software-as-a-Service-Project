@@ -7,7 +7,7 @@ const AuthorizedToken = async (token) => {
         actionType: 'Authorization',
         parameters: [token]
     }
-    const authorizationRes = await axios.post('http://localhost:4000/serivceExecution', reqBody);
+    const authorizationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
     return authorizationRes.data.user;
 }
 

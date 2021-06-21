@@ -1,20 +1,15 @@
 const express = require('express');
-const { default: axios } = require('axios');
-const passport = require('passport');
-const JWTstrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
-const JWT_SECRET = 'secret-key';
+const axios = require('axios');
 const router = express.Router();
 
-passport.use('token', new JWTstrategy(
-    {
-        secretOrKey: JWT_SECRET,
-        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
-    },
-    function(token, done){
-        return done(null, { username: token.username});
+const AuthorizedToken = async (token) => {
+    reqBody = {
+        actionType: 'Authorization',
+        parameters: [token]
     }
-));
+    const authorizationRes = await axios.post('http://localhost:4000/serivceExecution', reqBody);
+    return authorizationRes.data.user;
+}
 
 router.get('/questions/:id/answers', async function (req, res) {
     const questionId = req.params.id;
@@ -37,9 +32,15 @@ router.get('/questions/:id/answers', async function (req, res) {
 });
 
 router.post('/questions/:id/answers', 
-    passport.authenticate('token', { session: false }),
     async function (req, res){
         const questionId = req.params.id;
+        const token = req.header('Authorization');
+
+        // Authorize token
+        const user = await AuthorizedToken(token);
+        if(!user){
+            return res.status(401).send('Unauthorized');
+        }
 
         // If questionId provided is not valid
         // Do some checking
@@ -49,7 +50,6 @@ router.post('/questions/:id/answers',
             return res.status(404).send("The requested id was not found!");
         }
 
-        const user=req.user.username;
         const {answerContent} = req.body;
 
         console.log("User:"+user+", answer: "+answerContent);
@@ -60,10 +60,16 @@ router.post('/questions/:id/answers',
 });
 
 router.delete('/questions/:questionId/answers/:answerId', 
-    passport.authenticate('token', { session: false }),
     async function(req, res){
         const questionId = req.params.questionId;
         const answerId = req.params.answerId;
+        const token = req.header('Authorization');
+
+        // Authorize token
+        const user = await AuthorizedToken(token);
+        if(!user){
+            return res.status(401).send('Unauthorized');
+        }
 
         const {data:deleteRes}= await axios.post(`http://localhost:3020/deleteAnswer`, {question_id:questionId,answer_id:answerId});
 
@@ -76,28 +82,17 @@ router.delete('/questions/:questionId/answers/:answerId',
 });
 
 /* GET my Answers */
-router.get('/myAnswers', 
-  passport.authenticate('token', { session: false }),
+router.get('/myAnswers',
   async function(req, res) {
-    const user=req.user.username;
+    const token = req.header('Authorization');
+    // Authorize token
+    const user = await AuthorizedToken(token);
+    if(!user){
+        return res.status(401).send('Unauthorized');
+    }
+
     const {data:myAnswers}= await axios.post(`http://localhost:3020/getMyAnswers`, {user});
     res.send(myAnswers);
 });
-
-// router.post('/events', function (req, res) {
-//     console.log('Event Received:', req.body.type);
-//     createEvent(req.body);
-//
-//     const { type, data } = req.body;
-//
-//     if (type === 'QuestionCreated') {
-//         createQuestion(data.id, data.title);
-//     }
-//     else if (type === 'QuestionDeleted') {
-//         deleteQuestion(data.id);
-//     }
-//
-//     res.send({});
-// });
 
 module.exports = router;

@@ -1,27 +1,26 @@
 const express = require('express');
 const axios = require('axios');
-const passport = require('passport');
-const JWTstrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
-const JWT_SECRET = 'secret-key';
 const router = express.Router();
 
-// Extract username from token
-passport.use('token', new JWTstrategy(
-  {
-      secretOrKey: JWT_SECRET,
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
-  },
-  function(token, done){
-      return done(null, { username: token.username});
-  }
-));
+const AuthorizedToken = async (token) => {
+    reqBody = {
+        actionType: 'Authorization',
+        parameters: [token]
+    }
+    const authorizationRes = await axios.post('http://localhost:4000/serivceExecution', reqBody);
+    return authorizationRes.data.user;
+}
 
 /* GET my Questions */
 router.get('/questions/myQuestions', 
-  passport.authenticate('token', { session: false }),
   async function(req, res) {
-    const user=req.user.username;
+    const token = req.header('Authorization');
+    // Authorize token
+    const user = await AuthorizedToken(token);
+    if(!user){
+        return res.status(401).send('Unauthorized');
+    }
+
     const {data:result}= await axios.post(`http://localhost:3020/getMyQuestions`, {user});
     res.send(result);
 });
@@ -57,12 +56,17 @@ router.get('/questions', async function(req, res) {
 
 /* Add new question */
 router.post('/questions', 
-  passport.authenticate('token', { session: false }),
   async function (req, res){
-    let { title, keywords, content } = req.body; // gives title, keywords and content to body
+    const token = req.header('Authorization');
+    // Authorize token
+    const user = await AuthorizedToken(token);
+    if(!user){
+        return res.status(401).send('Unauthorized');
+    }
 
+    let { title, keywords, content } = req.body; // gives title, keywords and content to body
     if(typeof keywords === 'string'){
-      keywords = keywords.split(',');
+        keywords = keywords.split(',');
     }
 
     // Remove whitespaces between separator ,
@@ -74,7 +78,7 @@ router.post('/questions',
       title,
       keywords,
       content,
-      creator: req.user.username
+      creator: user
     };
 
     const {data:{insertId}} = await axios.post(`http://localhost:3020/createQuestion`, {new_question});
@@ -84,50 +88,24 @@ router.post('/questions',
       title,
       keywords,
       content,
-      creator: req.user.username
+      creator: user
     };
-    //
-    // // Send a QuestionCreated object in the event-bus service
-    // axios.post('http://localhost:3005/events', {
-    //   type: 'QuestionCreated',
-    //   data: {
-    //     id: insertId,
-    //     title: new_question.title
-    //   }
-    // });
 
     res.status(201).send(new_question);
 });
 
-router.delete('/questions/:questionId', 
-  passport.authenticate('token', { session: false }),
+router.delete('/questions/:questionId',
   async function(req, res){
     const questionId = req.params.questionId;
 
     const {data:deleteRes} = await axios.post(`http://localhost:3020/deleteQuestion`,{questionId});
 
     if(deleteRes.affectedRows > 0){
-
-      // axios.post('http://localhost:3005/events', {
-      //   type: 'QuestionDeleted',
-      //   data: {
-      //     id: questionId
-      //   }
-      // });
-
       return res.status(200).send("OK, question deleted");
     }
     else{
       return res.status(404).send("That question was not found!");
     }
 });
-
-// router.post('/events', function (req, res) {
-//   console.log('Event Received:', req.body.type);
-//
-//   createEvent(req.body);
-//
-//   res.send({});
-// });
 
 module.exports = router;

@@ -7,6 +7,7 @@
 const app = require('../app');
 const debug = require('debug')('authenticator:server');
 const http = require('http');
+const axios = require('axios');
 
 /**
  * Get port from environment and store in Express.
@@ -87,4 +88,9 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
     console.log('Authenticator listening on ' + bind);
+    const informBody = {
+      actionType: 'Authorization',
+      endpoint: 'http://localhost:3010/whoami'
+    }
+    axios.post('http://localhost:4000/serivceManagement', informBody);
 }

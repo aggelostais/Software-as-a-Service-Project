@@ -2,14 +2,24 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-/* GET home page. */
+const actions = {};
+
+router.post('/serivceManagement', async function(req, res, next) {
+  const { actionType, endpoint } = req.body;
+
+  actions[actionType] = endpoint;
+  console.log(actions);
+
+  res.send('OK');
+});
+
 router.post('/serivceExecution', async function(req, res, next) {
   const { actionType, parameters } = req.body;
 
   let actionResult;
   if(actionType === 'Authorization'){
     try{
-      actionResult = await axios.get('http://localhost:3010/whoami', { headers: {'Authorization': parameters[0]}});
+      actionResult = await axios.get(actions[actionType], { headers: {'Authorization': parameters[0]}});
       actionResult = actionResult.data.user.username;
     }
     catch(error){

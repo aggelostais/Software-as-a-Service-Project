@@ -50,13 +50,7 @@ export default function BrowseQA() {
                 }}>
                 Return Home
             </Button>
-            <div
-                style={{
-                    maxHeight: "78vh",
-                    overflowX: "hidden",
-                    overflowY: "scroll",
-                }}
-            >
+            <div>
                 {Object.keys(questions).length === 0 &&
                     <h3
                         style={{

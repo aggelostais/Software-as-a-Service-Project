@@ -135,13 +135,11 @@ function AnswerQuestion({token}) {
     <Container maxWidth="sm"> 
     <div
       style={{
-        marginTop: "80px",
-        maxHeight: "78vh",
-        overflowY: "scroll",
+        marginTop: "100px"
       }}
     >
       <h2 type="text" className="text-header" style={{marginTop:"20px"}}>
-        Answer Question
+        Answer a Question
       </h2>
       <Button 
             href="/"  //Redirects to Home Page

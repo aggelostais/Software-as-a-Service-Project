@@ -16,7 +16,7 @@ const ValidateQuestion = async (questionId) => {
         actionType: 'ValidateQuestion',
         parameters: [questionId]
     }
-    const validationRes = await axios.post('http://localhost:4000/serivceExecution', reqBody);
+    const validationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
     return validationRes.data.result;
 }
 
@@ -65,7 +65,8 @@ router.post('/questions/:id/answers',
 
         console.log("User:"+user+", answer: "+answerContent);
 
-        const {insertId} = await axios.post(`http://localhost:3020/createAnswer`, {question_id:questionId,answer_content:answerContent,creator:user});
+        const {insertId} = await axios.post(`http://localhost:3020/createAnswer`,
+            {question_id:questionId,answer_content:answerContent,creator:user});
 
         res.status(201).send({insertId});
 });

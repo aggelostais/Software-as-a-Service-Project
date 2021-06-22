@@ -4,7 +4,7 @@ const router = express.Router();
 
 const actions = {};
 
-router.post('/serivceManagement', async function(req, res, next) {
+router.post('/serviceManagement', async function(req, res, next) {
   const { actionType, endpoint } = req.body;
 
   actions[actionType] = endpoint;
@@ -13,7 +13,7 @@ router.post('/serivceManagement', async function(req, res, next) {
   res.send('OK');
 });
 
-router.post('/serivceExecution', async function(req, res, next) {
+router.post('/serviceExecution', async function(req, res, next) {
   const { actionType, parameters } = req.body;
 
   let actionResult;

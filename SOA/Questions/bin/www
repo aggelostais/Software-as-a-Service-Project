@@ -92,5 +92,5 @@ function onListening() {
       actionType: 'ValidateQuestion',
       endpoint: 'http://localhost:3011/questions'
     }
-    axios.post('http://localhost:4000/serivceManagement', informBody);
+    axios.post('http://localhost:4000/serviceManagement', informBody);
 }

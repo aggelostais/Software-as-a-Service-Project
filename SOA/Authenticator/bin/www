@@ -92,5 +92,5 @@ function onListening() {
       actionType: 'Authorization',
       endpoint: 'http://localhost:3010/whoami'
     }
-    axios.post('http://localhost:4000/serivceManagement', informBody);
+    axios.post('http://localhost:4000/serviceManagement', informBody);
 }

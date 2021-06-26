@@ -38,9 +38,12 @@ export default ( {date, answers} ) => {
     const renderedAnswers = Object.values(answers).map(answer => {
         if(answer.date === date)
             return (
-                <Typography variant="body2" component="p" key={answer.id}>
-                    <ArrowForwardIosIcon style={{fontSize:'small'}}/> 
-                    {answer.content} (For question: "{answer.question_title}")
+                <Typography variant="body1" component="p" key={answer.id}
+                align="left">
+                    <ArrowForwardIosIcon fontSize="small"/>
+                    <strong>Question: </strong> {answer.question_title}
+                    <br/>
+                    <strong> Answer: </strong> {answer.content}
                 </Typography>
             );
     });

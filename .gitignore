@@ -1,0 +1,7 @@
+
+*.sql
+Microservices/Front-end/src/pages/Home_help.js
+Microservices/Front-end/src/pages/Signup_Class.js
+SOA/Front-end/src/pages/Home_help.js
+SOA/Front-end/src/pages/Signup_Class.js
+SOA/Authenticator/routes/index_old.js

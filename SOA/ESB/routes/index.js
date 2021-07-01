@@ -2,25 +2,45 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const actions = {};
+const services={}; // Service Repository
 
+//  Service and (optional) action provided to other services is registered in Service Bus
 router.post('/serviceManagement', async function(req, res, next) {
-  const { actionType, endpoint } = req.body;
+  const { service, actionType, actionEndpoint } = req.body;
 
-  actions[actionType] = endpoint;
-  console.log(actions);
+   // If service was registered in the past delete
+  for (const key of Object.keys(services)) {
+    if(service===key)
+      delete services[key];
+  }
+
+   // Service has action to provide
+  if (actionType !== undefined) {
+    const temp={}
+    temp[actionType]=actionEndpoint
+    services[service] = temp;
+  }
+  else
+    services[service]=null;
+
+  console.log('Registered Services:');
+  console.log(services);
 
   res.send('OK');
 });
 
+// Returns Service Repository
+router.get('/serviceDiscovery', async function(req, res, next) {
+  res.send(services);
+});
+
 router.post('/serviceExecution', async function(req, res, next) {
   const { actionType, parameters } = req.body;
+  let req_service,actionResult;
 
-  let actionResult;
-
-  if(actionType === 'Authorization'){
+  if(actionType === 'TokenAuthorization'){
     try{
-      actionResult = await axios.get(actions[actionType], { headers: {'Authorization': parameters[0]}});
+      actionResult = await axios.get(services['Authorization'][actionType], { headers: {'Authorization': parameters[0]}});
       actionResult = actionResult.data.user.username;
     }
     catch(error){
@@ -32,9 +52,14 @@ router.post('/serviceExecution', async function(req, res, next) {
     return res.send({ user: actionResult});
   }
 
-  if(actionType === 'ValidateQuestion'){
+  else {
+  for (const key of Object.keys(services)) {
+    if(Object.keys(services[key])[0]===actionType)
+      req_service=key;
+  }
+
     try{
-      actionResult = await axios.get(actions[actionType] + `/${parameters[0]}`);
+      actionResult = await axios.get(services[req_service][actionType] + `/${parameters[0]}`);
       actionResult = actionResult.data;
     }
     catch(error){
@@ -46,7 +71,6 @@ router.post('/serviceExecution', async function(req, res, next) {
     return res.send({ result: actionResult });
   }
 
-  res.send('OK');
 });
 
 module.exports = router;

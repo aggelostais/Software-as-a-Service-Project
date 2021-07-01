@@ -4,11 +4,27 @@ const router = express.Router();
 
 const AuthorizedToken = async (token) => {
     reqBody = {
-        actionType: 'Authorization',
+        actionType: 'TokenAuthorization',
         parameters: [token]
     }
-    const authorizationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
-    return authorizationRes.data.user;
+
+    // Check if TokenAuthorization action is provided by another service
+    const {data:services} = await axios.get('http://localhost:4000/serviceDiscovery');
+    console.log(services);
+    let auth_offered = false;
+
+    // Loop through actions provided
+    for (const key of Object.keys(services)) {
+        if (key === 'Authorization' && Object.keys(services[key])[0]==='TokenAuthorization')
+            auth_offered = true;
+    }
+
+    if (auth_offered) {
+        const authorizationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
+        console.log(authorizationRes);
+        return authorizationRes.data.user;
+    } else
+        return null; // If Authorization service is unavailable
 }
 
 /* GET my Questions */
@@ -54,7 +70,7 @@ router.get('/questions', async function(req, res) {
     res.send(results);
 });
 
-/* GET question by id. */
+/* Validate question by id */
 router.get('/questions/:questionId', async function(req, res) {
   const questionId = req.params.questionId;
   const {data:questionIsValid}= await axios.post(`http://localhost:3020/questionValid`, {question_id:questionId} );

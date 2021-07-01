@@ -89,8 +89,9 @@ function onListening() {
     : 'port ' + addr.port;
     console.log('Authenticator listening on ' + bind);
     const informBody = {
-      actionType: 'Authorization',
-      endpoint: 'http://localhost:3010/whoami'
+      service: 'Authorization',
+      actionType: 'TokenAuthorization',
+      actionEndpoint: 'http://localhost:3010/whoami'
     }
     axios.post('http://localhost:4000/serviceManagement', informBody);
 }

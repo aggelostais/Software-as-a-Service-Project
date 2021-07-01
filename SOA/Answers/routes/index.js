@@ -4,11 +4,27 @@ const router = express.Router();
 
 const AuthorizedToken = async (token) => {
     reqBody = {
-        actionType: 'Authorization',
+        actionType: 'TokenAuthorization',
         parameters: [token]
     }
-    const authorizationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
-    return authorizationRes.data.user;
+
+    // Check if TokenAuthorization action is provided by another service
+    const {data:services} = await axios.get('http://localhost:4000/serviceDiscovery');
+    console.log(services);
+    let auth_offered = false;
+
+    // Loop through actions provided
+    for (const key of Object.keys(services)) {
+        //console.log(key, actions[key]);
+        if (key === 'Authorization' && Object.keys(services[key])[0]==='TokenAuthorization')
+            auth_offered = true;
+    }
+
+    if (auth_offered) {
+        const authorizationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
+        return authorizationRes.data.user;
+    } else
+        return null; // If Authorization service is unavailable
 }
 
 const ValidateQuestion = async (questionId) => {
@@ -16,9 +32,25 @@ const ValidateQuestion = async (questionId) => {
         actionType: 'ValidateQuestion',
         parameters: [questionId]
     }
-    const validationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
-    return validationRes.data.result;
+
+    // Check if TokenAuthorization action is provided by another service
+    const {data:services} = await axios.get('http://localhost:4000/serviceDiscovery');
+    console.log(services);
+    let quest_offered = false;
+
+    // Loop through actions provided
+    for (const key of Object.keys(services)) {
+        if (key === 'Questions' && Object.keys(services[key])[0]==='ValidateQuestion')
+            quest_offered = true;
+    }
+
+    if (quest_offered) {
+        const validationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
+        return validationRes.data.result;
+    } else
+        return null; // If Question service is unavailable
 }
+
 
 router.get('/questions/:id/answers', async function (req, res) {
     const questionId = req.params.id;

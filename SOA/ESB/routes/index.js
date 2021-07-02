@@ -54,7 +54,7 @@ router.post('/serviceExecution', async function(req, res, next) {
 
   else {
   for (const key of Object.keys(services)) {
-    if(Object.keys(services[key])[0]===actionType)
+    if(services[key] && Object.keys(services[key])[0]===actionType)
       req_service=key;
   }
 

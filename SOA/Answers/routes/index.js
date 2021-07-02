@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
+
 const AuthorizedToken = async (token) => {
     reqBody = {
         actionType: 'TokenAuthorization',
@@ -15,13 +16,13 @@ const AuthorizedToken = async (token) => {
 
     // Loop through actions provided
     for (const key of Object.keys(services)) {
-        //console.log(key, actions[key]);
         if (key === 'Authorization' && Object.keys(services[key])[0]==='TokenAuthorization')
             auth_offered = true;
     }
 
     if (auth_offered) {
         const authorizationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
+        console.log(authorizationRes);
         return authorizationRes.data.user;
     } else
         return null; // If Authorization service is unavailable

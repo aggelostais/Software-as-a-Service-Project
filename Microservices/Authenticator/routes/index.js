@@ -59,7 +59,7 @@ router.post('/signup',
             result: 'User ' + req.body.username + ' welcome!', status:true});
     }
     catch(e){
-        console.log('Sign In Error: ' + e);
+        console.log('Sign Up Error: ' + e);
         res.status(400).send('error');
     }
 });

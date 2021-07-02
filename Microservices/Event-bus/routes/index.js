@@ -17,19 +17,13 @@ router.post('/events', async function(req, res, next) {
     ...createdEvent,
     data : JSON.parse(createdEvent.data.replace(/'/g, "\""))
   };
-  // console.log(createdEvent);
 
-
-  // Send event to Authenticator
-  axios.post('http://localhost:3010/events', createdEvent)
-      .catch(e => { error = true; });
-  
-  // Send event to Questions
-  axios.post('http://localhost:3011/events', createdEvent)
-      .catch(e => { error = true; });
-
-  // Send event to Answers
+  // Send event to Subscriber: Answers Service
   axios.post('http://localhost:3012/events', createdEvent)
+      .catch(e => { error = true; });
+
+  // Send event to Subscriber: Statistics Service
+  axios.post('http://localhost:3015/events', createdEvent)
       .catch(e => { error = true; });
 
   if(error){
@@ -39,6 +33,7 @@ router.post('/events', async function(req, res, next) {
   res.status(200).send({status: 'Event successfully propagated'});
 });
 
+// Fetches events from certain id to requested service
 router.post('/fetchEvents', async function(req, res) {
   const { id, timestamp, requester} = req.body;
 

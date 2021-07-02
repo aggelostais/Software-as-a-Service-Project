@@ -19,10 +19,25 @@ const createAnswer = async (questionId, answerContent, creator) => {
 
         let res = await pool.query(query);
 
-        // Convert OkPacket to plain object
         res = JSON.parse(JSON.stringify(res));
+        //console.log(res);
+        const {insertId}=res;
 
-        return res;
+        query=`SELECT id,timestamp FROM answer WHERE answer.id="${insertId}";`
+        res = await pool.query(query);
+
+        // Send a QuestionCreated object in the event-bus service
+        axios.post('http://localhost:3005/events', {
+            type: 'AnswerCreated',
+            data: {
+                id: insertId,
+                question_id: questionId,
+                creator:creator,
+                timestamp:res[0].timestamp
+            }
+        });
+
+        return res[0].id;
         
     }catch(err){
         throw err;
@@ -168,7 +183,7 @@ const getMyAnswers = async (username) => {
         JOIN question
         ON question.id = answer.question_id  
         WHERE answer.creator="${username}" 
-        ORDER BY answer.timestamp DESC;`;
+        ORDER BY date DESC;`;
 
         let answers = await pool.query(query);
 

@@ -29,7 +29,6 @@ router.get('/questions/:id/answers', async function (req, res) {
             answerContent: element.content,
             creator: element.creator
         }
-        
     }
 
     res.send(answers);
@@ -40,8 +39,7 @@ router.post('/questions/:id/answers',
     async function (req, res){
         const questionId = req.params.id;
 
-        // If questionId provided is not valid
-        // Do some checking
+        // Check if question provided is valid
         const questionIsValid = await questionValid(questionId);
         if(!questionIsValid){
             console.log(`Asked for questionId = ${questionId}, but that id was not found`);
@@ -71,7 +69,7 @@ router.delete('/questions/:questionId/answers/:answerId',
         }
 });
 
-/* GET my Ansers */
+/* GET my Answers */
 router.get('/myAnswers', 
   passport.authenticate('token', { session: false }),
   async function(req, res) {

@@ -28,7 +28,7 @@ export default function QuestionsPerKeyword(){
 
     // Gets backend array and saves data
     const fetchQuestions = async () => {
-        const res = await axios.get('http://localhost:3011/questions/PerKeyword');
+        const res = await axios.get('http://localhost:3015/questionsPerKeyword');
         setKeywords(res.data);
         console.log(keywords);
     };

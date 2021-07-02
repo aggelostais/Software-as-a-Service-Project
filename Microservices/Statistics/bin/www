@@ -5,14 +5,15 @@
  */
 
 const app = require('../app');
-const debug = require('debug')('questions:server');
+const debug = require('debug')('answers:server');
 const http = require('http');
+const { updateEvents } = require('../routes/queries');
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3011');
+const port = normalizePort(process.env.PORT || '3015');
 app.set('port', port);
 
 /**
@@ -34,7 +35,7 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  let port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -58,9 +59,9 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  const bind = typeof port === 'string'
+      ? 'Pipe ' + port
+      : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -82,9 +83,10 @@ function onError(error) {
  */
 
 function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-    console.log('Questions listening on ' + bind);
+  const addr = server.address();
+  const bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
+  console.log('Statistics listening on ' + bind);
+  updateEvents();
 }

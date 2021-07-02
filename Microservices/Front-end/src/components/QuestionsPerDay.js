@@ -28,7 +28,7 @@ export default function QuestionsPerDay() {
 
     // Backend call
     const fetchQuestions = async () => {
-        const res = await axios.get('http://localhost:3011/questions/PerDay');
+        const res = await axios.get('http://localhost:3015/questionsPerDay');
         setDates(res.data);
         console.log(dates);
     };

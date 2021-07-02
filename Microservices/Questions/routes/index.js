@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { createQuestion, getQuestions, getMyQuestions, getQuestPerKey,getQuestPerDay, createEvent, deleteQuestion } = require('./queries');
+const { createQuestion, getQuestions, getMyQuestions, deleteQuestion } = require('./queries');
 const passport = require('passport');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
@@ -24,28 +24,6 @@ router.get('/questions/myQuestions',
   async function(req, res) {
     const myQuestions = await getMyQuestions(req.user.username);
     res.send(myQuestions);
-});
-
-/* GET questions per keyword */
-router.get('/questions/PerKeyword', async function(req, res) {
-    const results = await getQuestPerKey();
-    let perkeyword=[];
-    for (let i = 0; i < results.length; i++) {
-        perkeyword.push(results[i].keyword);
-        perkeyword.push(results[i].related_questions);
-    }
-    res.send(perkeyword);
-});
-
-/* GET questions per day */
-router.get('/questions/PerDay', async function(req, res) {
-    const results = await getQuestPerDay();
-    let perday=[];
-    for (let i = 0; i < results.length; i++) {
-        perday.push(results[i].date);
-        perday.push(results[i].related_questions);
-    }
-    res.send(perday);
 });
 
 /* GET all questions. */
@@ -76,24 +54,17 @@ router.post('/questions',
       creator: req.user.username
     };
 
-    const {insertId} = await createQuestion(new_question);
+    const query = await createQuestion(new_question);
 
     new_question = {
-      id: insertId,
+      id: query.id,
+      timestamp: query.timestamp,
       title,
       keywords,
       content,
       creator: req.user.username
     };
 
-    // Send a QuestionCreated object in the event-bus service
-    axios.post('http://localhost:3005/events', {
-      type: 'QuestionCreated',
-      data: {
-        id: insertId,
-        title: new_question.title
-      }
-    });
 
     res.status(201).send(new_question);
 });
@@ -119,14 +90,6 @@ router.delete('/questions/:questionId',
     else{
       return res.status(404).send("That question was not found!");
     }
-});
-
-router.post('/events', function (req, res) {
-  console.log('Event Received:', req.body.type);
-
-  createEvent(req.body);
-
-  res.send({});
 });
 
 module.exports = router;

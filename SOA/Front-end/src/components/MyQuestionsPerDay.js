@@ -38,9 +38,9 @@ export default ( {date, questions} ) => {
     const renderedQuestions = Object.values(questions).map(question => {
         if(question.date === date)
             return (
-                <Typography variant="body2" component="p" key={question.id}>
+                <Typography variant="body1" component="p" key={question.id} align="left">
                     <ArrowForwardIosIcon style={{fontSize:'small'}}/> 
-                    {question.title} ({question.content})
+                    <strong> {question.title}: </strong> {question.content}
                 </Typography>
             );
     });

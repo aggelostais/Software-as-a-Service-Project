@@ -77,7 +77,7 @@ function AnswerQuestion({token}) {
 
   const renderedQuestions = Object.values(questions).map(question => {
       return (
-          <MenuItem key={question.id} value={question.id}>{question.title} ({question.content})</MenuItem>
+          <MenuItem key={question.id} value={question.id}>{question.title}: {question.content}</MenuItem>
       );
   });
 

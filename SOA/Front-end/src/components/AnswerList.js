@@ -22,7 +22,7 @@ export default ( {questionId} ) => {
         return (
             <Typography variant="body2" component="p" key={answer.id}>
                 <ArrowForwardIosIcon style={{fontSize:'small'}}/> 
-                {answer.creator}: {answer.answerContent}
+                <strong>{answer.creator}:</strong> {answer.answerContent}
             </Typography>
         );
     });

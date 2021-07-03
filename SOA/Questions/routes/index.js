@@ -21,7 +21,6 @@ const AuthorizedToken = async (token) => {
 
     if (auth_offered) {
         const authorizationRes = await axios.post('http://localhost:4000/serviceExecution', reqBody);
-        console.log(authorizationRes);
         return authorizationRes.data.user;
     } else
         return null; // If Authorization service is unavailable

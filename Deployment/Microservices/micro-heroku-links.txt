@@ -1,0 +1,11 @@
+Answers:        https://microservices-answers.herokuapp.com/
+
+Authenticator:  https://microservices-authenticator.herokuapp.com/
+
+Event bus:      https://microservices-event-bus.herokuapp.com/
+
+Front end:      https://microservices-front-end.herokuapp.com/
+
+Questions:      https://microservices-questions.herokuapp.com/
+
+Stats:          https://microservices-statistics.herokuapp.com/

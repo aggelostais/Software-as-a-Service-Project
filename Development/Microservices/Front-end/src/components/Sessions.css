@@ -1,0 +1,47 @@
+.text-header {
+  margin-left: 5px;
+  margin-top: 20px;
+  font-family: Helvetica;
+}
+
+.text-body {
+  margin: 5px;
+  font-family: Helvetica;
+}
+
+.input {
+  margin-left: 5px;
+}
+
+.input-date {
+  margin: 5px;
+}
+
+.submit-button {
+  margin-left: 20px;
+  display: inline-block;
+  cursor: pointer;
+  border: 1px transparent;
+  text-align: center;
+  border-radius: 4px;
+  min-width: 90px;
+  height: 30px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+  font-weight: bold;
+  background: #8190a5;
+  text-decoration: none;
+  color: white;
+  transition: all 0.1s ease-in;
+}
+
+.submit-button:hover {
+  background: #217d81;
+}
+
+li {
+  list-style-type: none;
+  list-style-position: inside;
+  text-align: center;
+  margin: 5px;
+  padding: 0;
+}

@@ -1,0 +1,64 @@
+.App {
+  text-align: center;
+  background-color: #8695b3;
+}
+
+.button {
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+  display: inline-block;
+  border: 1px transparent;
+  vertical-align: middle;
+  text-align: center;
+  padding: 8px;
+  height: 40px;
+  width: 90px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+  font-weight: bold;
+  background: #3d4574;
+  color: white;
+  text-decoration: none;
+
+  transition: all 0.1s ease-in;
+}
+
+.button:hover {
+  background: #262e58;
+  text-decoration: none;
+  color: white;
+}
+
+.button-menu {
+  margin-left: 5px;
+  margin-bottom: 15px;
+  display: block;
+  cursor: pointer;
+  border: 1px transparent;
+  text-align: center;
+  padding: 20px;
+  height: 40px;
+  width: 250px;
+  line-height: 0px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+  font-weight: bold;
+  background: #8190a5;
+  color: white;
+  text-decoration: none;
+
+  transition: all 0.1s ease-in;
+}
+
+.button-menu:hover {
+  background: #217d81;
+  text-decoration: none;
+  color: white;
+}
+
+.text {
+  margin-left: 5px;
+  margin-top: 10px;
+  font-family: Helvetica;
+}

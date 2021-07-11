@@ -1,0 +1,19 @@
+SOA-Answers: https://soa-answers.herokuapp.com/
+
+SOA-Authenticator: https://soa-authenticator.herokuapp.com/
+
+SOA-Data-Layer: https://soa-data-layer.herokuapp.com/
+
+SOA-Users-Data-Layer: https://soa-users-data-layer.herokuapp.com/
+
+SOA-ESB: https://soa-esb.herokuapp.com/
+
+SOA-Front-end: https://soa-front-end.herokuapp.com/
+
+SOA-Questions: https://soa-questions.herokuapp.com/
+
+React deployment: 
+
+heroku create $APP_NAME --buildpack mars/create-react-app
+git push heroku master
+heroku open

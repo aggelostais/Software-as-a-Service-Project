@@ -40,7 +40,7 @@ export default ( {date, questions} ) => {
             return (
                 <Typography variant="body1" component="p" key={question.id} align="left">
                     <ArrowForwardIosIcon style={{fontSize:'small'}}/> 
-                    <strong> {question.title} </strong> {question.content}
+                    <strong> {question.title}: </strong> {question.content}
                 </Typography>
             );
     });

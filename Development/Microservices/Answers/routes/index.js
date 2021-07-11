@@ -6,6 +6,7 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 const JWT_SECRET = 'secret-key';
 const router = express.Router();
 
+// Validate token and extract username from token
 passport.use('token', new JWTstrategy(
     {
         secretOrKey: JWT_SECRET,
@@ -16,6 +17,7 @@ passport.use('token', new JWTstrategy(
     }
 ));
 
+// GET answers of a question
 router.get('/questions/:id/answers', async function (req, res) {
     const questionId = req.params.id;
 
@@ -34,6 +36,7 @@ router.get('/questions/:id/answers', async function (req, res) {
     res.send(answers);
 });
 
+// Create new answer
 router.post('/questions/:id/answers', 
     passport.authenticate('token', { session: false }),
     async function (req, res){

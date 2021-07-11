@@ -7,7 +7,7 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 const JWT_SECRET = 'secret-key';
 const router = express.Router();
 
-// Extract username from token
+// Validate token and extract username from token
 passport.use('token', new JWTstrategy(
   {
       secretOrKey: JWT_SECRET,
@@ -17,6 +17,7 @@ passport.use('token', new JWTstrategy(
       return done(null, { username: token.username});
   }
 ));
+
 
 /* GET my Questions */
 router.get('/questions/myQuestions', 

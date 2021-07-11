@@ -3,6 +3,7 @@ const axios = require('axios');
 const { createEvent, getNewEvents, getAll, getEvent } = require('./queries');
 const router = express.Router();
 
+// Gets an event from a Publisher and send it to Subscribers
 router.post('/events', async function(req, res, next) {
   const event = req.body;
 

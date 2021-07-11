@@ -51,7 +51,7 @@ const ValidateQuestion = async (questionId) => {
         return null; // If Question service is unavailable
 }
 
-
+// GET question's answers
 router.get('/questions/:id/answers', async function (req, res) {
     const questionId = req.params.id;
     console.log('requested answers for question: ' + questionId);
@@ -73,6 +73,7 @@ router.get('/questions/:id/answers', async function (req, res) {
     res.send(answers);
 });
 
+// Create answer
 router.post('/questions/:id/answers', 
     async function (req, res){
         const questionId = req.params.id;
@@ -104,6 +105,7 @@ router.post('/questions/:id/answers',
         res.status(201).send({insertId});
 });
 
+// Delete answer
 router.delete('/questions/:questionId/answers/:answerId', 
     async function(req, res){
         const questionId = req.params.questionId;

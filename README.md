@@ -1,7 +1,7 @@
 # AskMeAnything
 **Saas Course Project at ECE-NTUA 2021**: A Q&A app offered as a service (SaaS) to fictional clients.
 
-**Contributors:** *Sokratis Poutas, Aggelos Stais*
+**Contributors:** *Sokratis Poutas, Angelos Stais*
 
 ## Implementation Stack
 * Node, Express
